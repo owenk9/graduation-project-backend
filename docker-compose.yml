@@ -1,0 +1,16 @@
+
+services:
+  equipment_db:
+    image: postgres:15
+    container_name: equipment_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: equipment_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - equipment_data:/var/lib/postgresql/data
+volumes:
+  equipment_data:
