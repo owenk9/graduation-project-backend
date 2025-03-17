@@ -2,9 +2,11 @@ package com.example.backend.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "role_permission")
 public class RolePermission {

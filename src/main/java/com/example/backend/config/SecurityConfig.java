@@ -1,64 +1,63 @@
 package com.example.backend.config;
 
-import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
-import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
-import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
-import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@KeycloakConfiguration
-public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
-        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(simpleAuthorityMapper());
-        auth.authenticationProvider(keycloakAuthenticationProvider);
-    }
-    @Override
-    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        return new NullAuthenticatedSessionStrategy();
-    }
-
-    @Override
-    public void init(WebSecurity builder) throws Exception {
-
-    }
-
-    @Override
-    public void configure(WebSecurity builder) throws Exception {
-
-    }
-
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+//    private final JwtFilter jwtFilter;
+//    public SecurityConfig(JwtFilter jwtFilter) {
+//        this.jwtFilter = jwtFilter;
+//    }
     @Bean
-    public SimpleAuthorityMapper simpleAuthorityMapper() {
-        SimpleAuthorityMapper mapper = new SimpleAuthorityMapper();
-        mapper.setPrefix("ROLE_");
-        mapper.setConvertToUpperCase(true);
-        return mapper;
-    }
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/location/add").hasRole("ADMIN")
-                        .requestMatchers("/equipment/add").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/permission/add").hasRole("ADMIN")
+                        .requestMatchers("/auth/**").permitAll() // Đăng nhập và đăng ký
+
+                        // Equipment endpoints
+                        .requestMatchers("/equipment/add").hasAuthority("MANAGE_EQUIPMENT")
+                        .requestMatchers("/equipment/get", "/equipment/get/**").hasAuthority("VIEW_EQUIPMENT")
+                        .requestMatchers("/equipment/update/**").hasAuthority("MANAGE_EQUIPMENT")
+                        .requestMatchers("/equipment/delete/**").hasAuthority("MANAGE_EQUIPMENT")
+
+                        // Location endpoints
+                        .requestMatchers("/location/add").hasAuthority("MANAGE_EQUIPMENT")
+                        .requestMatchers("/location/get", "/location/get/**").hasAuthority("VIEW_EQUIPMENT")
+                        .requestMatchers("/location/update/**").hasAuthority("MANAGE_EQUIPMENT")
+                        .requestMatchers("/location/delete/**").hasAuthority("MANAGE_EQUIPMENT")
+
+                        // Permission endpoints
+                        .requestMatchers("/permission/add").hasAuthority("MANAGE_PERMISSION")
+                        .requestMatchers("/permission/get", "/permission/get/**").hasAuthority("VIEW_PERMISSION")
+                        .requestMatchers("/permission/update/**").hasAuthority("MANAGE_PERMISSION")
+                        .requestMatchers("/permission/delete/**").hasAuthority("MANAGE_PERMISSION")
                         .anyRequest().authenticated()
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
-                );
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 }
