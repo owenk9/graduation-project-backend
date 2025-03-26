@@ -3,6 +3,7 @@ package com.example.backend.service.Impl;
 import com.example.backend.dto.request.CategoryRequest;
 import com.example.backend.dto.response.CategoryResponse;
 import com.example.backend.entity.Category;
+import com.example.backend.exception.DuplicateResourceException;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.CategoryMapper;
 import com.example.backend.repository.CategoryRepository;
@@ -23,6 +24,10 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryMapper categoryMapper;
     @Override
     public CategoryResponse addCategory(CategoryRequest categoryRequest) {
+        boolean categoryExists = categoryRepository.existsByCategoryName(categoryRequest.getCategoryName());
+        if(categoryExists){
+            throw new DuplicateResourceException("Category " + categoryRequest.getCategoryName() +  " already exists");
+        }
         Category category = categoryMapper.toCategory(categoryRequest);
         return categoryMapper.toCategoryResponse(categoryRepository.save(category));
     }

@@ -28,6 +28,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // Đăng nhập và đăng ký
 
+                        // Home
+                        .requestMatchers("/home/**").permitAll()
                         // Equipment endpoints
                         .requestMatchers("/equipment/add").hasAuthority("MANAGE_EQUIPMENT")
                         .requestMatchers("/equipment/get", "/equipment/get/**").hasAuthority("VIEW_EQUIPMENT")

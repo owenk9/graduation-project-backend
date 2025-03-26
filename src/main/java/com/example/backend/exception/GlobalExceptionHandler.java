@@ -53,4 +53,10 @@ public class GlobalExceptionHandler {
         ErrorResponse error = createErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred: " + ex.getMessage(), request);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateResourceException(DuplicateResourceException ex, WebRequest webRequest) {
+        ErrorResponse error = createErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), webRequest);
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
 }

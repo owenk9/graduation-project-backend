@@ -3,18 +3,21 @@ package com.example.backend.service;
 import com.example.backend.entity.CustomUserDetails;
 import com.example.backend.entity.Users;
 import com.example.backend.repository.UsersRepository;
-import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService{
+public class CustomUserDetailsService implements UserDetailsService {
     private final UsersRepository usersRepository;
+
     public CustomUserDetailsService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
     }
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -22,6 +25,15 @@ public class CustomUserDetailsService implements UserDetailsService{
         Users users = usersRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email " + email));
         System.out.println("Found user: " + users.getEmail());
+        Hibernate.initialize(users.getUserRoles()); // Khởi tạo UserRole
+        if (users.getUserRoles() != null) {
+            users.getUserRoles().forEach(userRole -> {
+                Hibernate.initialize(userRole.getRole()); // Khởi tạo Role
+                if (userRole.getRole() != null) {
+                    Hibernate.initialize(userRole.getRole().getRolePermission()); // Khởi tạo RolePermission
+                }
+            });
+        }
         return new CustomUserDetails(users);
     }
 }

@@ -17,6 +17,7 @@ public class Equipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     String name;
+    int quantity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
@@ -31,7 +32,5 @@ public class Equipment {
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Maintenance> maintenance;
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+
 }

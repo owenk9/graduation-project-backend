@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class EquipmentRequest {
     @NotNull(message = "Name cannot be null")
     String name;
+    int quantity;
     @NotNull(message = "Category ID cannot be null")
     Integer categoryId;
     String status;
@@ -22,51 +23,52 @@ public class EquipmentRequest {
     LocalDateTime purchaseDate;
     String description;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Integer getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(Integer locationId) {
-        this.locationId = locationId;
-    }
-
-    public LocalDateTime getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(LocalDateTime purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//
+//    public Integer getCategoryId() {
+//        return categoryId;
+//    }
+//
+//    public void setCategoryId(Integer categoryId) {
+//        this.categoryId = categoryId;
+//    }
+//
+//    public String getStatus() {
+//        return status;
+//    }
+//
+//    public void setStatus(String status) {
+//        this.status = status;
+//    }
+//
+//    public Integer getLocationId() {
+//        return locationId;
+//    }
+//
+//    public void setLocationId(Integer locationId) {
+//        this.locationId = locationId;
+//    }
+//
+//    public LocalDateTime getPurchaseDate() {
+//        return purchaseDate;
+//    }
+//
+//    public void setPurchaseDate(LocalDateTime purchaseDate) {
+//        this.purchaseDate = purchaseDate;
+//    }
+//
+//    public String getDescription() {
+//        return description;
+//    }
+//
+//    public void setDescription(String description) {
+//        this.description = description;
+//    }
 }

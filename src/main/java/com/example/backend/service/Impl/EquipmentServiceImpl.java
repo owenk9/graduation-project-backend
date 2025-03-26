@@ -5,6 +5,7 @@ import com.example.backend.dto.response.EquipmentResponse;
 import com.example.backend.entity.Category;
 import com.example.backend.entity.Equipment;
 import com.example.backend.entity.Location;
+import com.example.backend.exception.DuplicateResourceException;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.EquipmentMapper;
 import com.example.backend.repository.CategoryRepository;
@@ -17,6 +18,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -36,6 +40,10 @@ public class EquipmentServiceImpl implements EquipmentService{
     }
     @Override
     public EquipmentResponse addEquipment(EquipmentRequest equipmentRequest) {
+        boolean equipmentExists = equipmentRepository.existsByName(equipmentRequest.getName());
+        if(equipmentExists) {
+            throw new DuplicateResourceException("Equipment with name " + equipmentRequest.getName() + " already exists");
+        }
         Equipment equipment = equipmentMapper.toEquipment(equipmentRequest);
         equipment.setCategory(getCategoryById(equipmentRequest.getCategoryId()));
         equipment.setLocation(getLocationById(equipmentRequest.getLocationId()));
@@ -76,7 +84,7 @@ public class EquipmentServiceImpl implements EquipmentService{
 
     @Override
     public Page<EquipmentResponse> findEquipmentByLocationId(int locationId, Pageable pageable) {
-        Page<Equipment> equipment = equipmentRepository.findEquipmentByLocationId(locationId, pageable);
+        Page<Equipment> equipment = equipmentRepository.findByLocationId(locationId, pageable);
         if(equipment.isEmpty()){
             throw new ResourceNotFoundException("No equipment found for location id: " + locationId);
         }
@@ -85,10 +93,25 @@ public class EquipmentServiceImpl implements EquipmentService{
 
     @Override
     public Page<EquipmentResponse> findEquipmentByCategoryId(int categoryId, Pageable pageable) {
-        Page<Equipment> equipment = equipmentRepository.findEquipmentByCategoryId(categoryId, pageable);
+        Page<Equipment> equipment = equipmentRepository.findByCategoryId(categoryId, pageable);
         if(equipment.isEmpty()){
             throw new ResourceNotFoundException("No equipment found for category id: " + categoryId);
         }
         return equipment.map(equipmentMapper::toEquipmentResponse);
     }
+
+    @Override
+    public long getTotalEquipment() {
+        return equipmentRepository.getTotalEquipment();
+    }
+
+    @Override
+    public Map<String, Long> countByStatus() {
+        Map<String, Long> equipmentByStatus = new HashMap<>();
+        equipmentByStatus.put("Active", equipmentRepository.countByStatus("Active"));
+        equipmentByStatus.put("Broken", equipmentRepository.countByStatus("Broken"));
+        equipmentByStatus.put("Maintenance", equipmentRepository.countByStatus("Maintenance"));
+        return equipmentByStatus;
+    }
+
 }

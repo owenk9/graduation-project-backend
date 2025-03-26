@@ -19,9 +19,7 @@ public class Role {
     String roleName;
     String description;
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    @ToString.Exclude
-    private Set<Users> users;
+    private Set<UserRole> userRoles;
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<RolePermission> rolePermission;
 }

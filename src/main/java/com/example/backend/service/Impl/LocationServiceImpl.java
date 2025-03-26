@@ -3,6 +3,7 @@ package com.example.backend.service.Impl;
 import com.example.backend.dto.request.LocationRequest;
 import com.example.backend.dto.response.LocationResponse;
 import com.example.backend.entity.Location;
+import com.example.backend.exception.DuplicateResourceException;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.LocationMapper;
 import com.example.backend.repository.LocationRepository;
@@ -22,6 +23,10 @@ public class LocationServiceImpl implements LocationService {
     LocationRepository locationRepository;
     @Override
     public LocationResponse addLocation(LocationRequest locationRequest) {
+        boolean locationExists = locationRepository.existsByLocationName(locationRequest.getLocationName());
+        if (locationExists) {
+            throw new DuplicateResourceException("Location " + locationRequest.getLocationName() + " already exists");
+        }
         Location location = locationMapper.toLocation(locationRequest);
         return locationMapper.toLocationResponse(locationRepository.save(location));
     }

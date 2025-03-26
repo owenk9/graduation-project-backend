@@ -5,10 +5,16 @@ import com.example.backend.entity.Equipment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Map;
 
 public interface EquipmentRepository extends JpaRepository<Equipment, Integer> {
-    Page<Equipment> findEquipmentByLocationId(int locationId, Pageable pageable);
-    Page<Equipment> findEquipmentByCategoryId(int categoryId, Pageable pageable);
+    boolean existsByName(String name);
+    Page<Equipment> findByLocationId(int locationId, Pageable pageable);
+    Page<Equipment> findByCategoryId(int categoryId, Pageable pageable);
+    @Query("select count(e) from Equipment e")
+    long getTotalEquipment();
+    long countByStatus(String status);
 }
