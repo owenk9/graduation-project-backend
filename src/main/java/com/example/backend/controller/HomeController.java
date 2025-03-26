@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.service.BorrowingService;
 import com.example.backend.service.EquipmentService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class HomeController {
     EquipmentService equipmentService;
-
+    BorrowingService borrowingService;
     @GetMapping("/total-equipment")
     public ResponseEntity<Long> getTotalEquipment() {
         return ResponseEntity.ok(equipmentService.getTotalEquipment());
@@ -25,5 +26,9 @@ public class HomeController {
     @GetMapping("/equipment-count")
     public ResponseEntity<Map<String, Long>> countByStatus () {
         return ResponseEntity.ok(equipmentService.countByStatus());
+    }
+    @GetMapping("/total-borrowing")
+    public ResponseEntity<Long> getTotalBorrowings() {
+        return ResponseEntity.ok(borrowingService.getTotalBorrowings());
     }
 }
