@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class BorrowingResponse {
     int id;
     int equipmentId;
-    int userId;
+    int usersId;
     LocalDateTime borrowDate;
     LocalDateTime returnDate;
     String status;

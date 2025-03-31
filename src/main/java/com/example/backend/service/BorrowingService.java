@@ -14,6 +14,8 @@ public interface BorrowingService {
     void deleteBorrowing(int id);
     BorrowingResponse getBorrowingById(int id);
     Page<BorrowingResponse> getAllBorrowings(Pageable pageable);
+    Page<BorrowingResponse> findBorrowingByUsersId(int usersId, Pageable pageable);
+    Page<BorrowingResponse> findBorrowingByEquipmentId(int equipmentId, Pageable pageable);
     long getTotalBorrowings();
 
 }

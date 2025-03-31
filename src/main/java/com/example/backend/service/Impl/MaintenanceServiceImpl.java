@@ -12,6 +12,8 @@ import com.example.backend.service.MaintenanceService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,7 +35,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    public MaintenanceResponse updateMaintenance(MaintenanceRequest maintenancerequest) {
+    public MaintenanceResponse updateMaintenance(int id, MaintenanceRequest maintenancerequest) {
         Maintenance maintenance = maintenanceMapper.toMaintenance(maintenancerequest);
         maintenance.setEquipment(findEquipmentById(maintenancerequest.getEquipmentId()));
         maintenance.setMaintenanceDate(maintenancerequest.getMaintenanceDate());
@@ -54,4 +56,34 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         Maintenance maintenance = maintenanceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Maintenance not found with id: " + id));
         return maintenanceMapper.toMaintenanceResponse(maintenance);
     }
+
+    @Override
+    public Page<MaintenanceResponse> getAllMaintenances(Pageable pageable) {
+        Page<Maintenance> maintenances = maintenanceRepository.findAll(pageable);
+        return maintenances.map(maintenanceMapper::toMaintenanceResponse);
+    }
+
+    @Override
+    public Page<MaintenanceResponse> findMaintenanceByEquipmentId(int equipmentId, Pageable pageable) {
+        Page<Maintenance> maintenance = maintenanceRepository.findMaintenanceByEquipmentId(equipmentId, pageable);
+        if(maintenance.isEmpty()){
+            throw new ResourceNotFoundException("Maintenance not found with id: " + equipmentId);
+        }
+        return maintenance.map(maintenanceMapper::toMaintenanceResponse);
+    }
+
+    @Override
+    public Page<MaintenanceResponse> findMaintenanceByTechnician(String technician, Pageable pageable) {
+        Page<Maintenance> maintenance = maintenanceRepository.findMaintenanceByTechnician(technician, pageable);
+        if(maintenance.isEmpty()){
+            throw new ResourceNotFoundException("Maintenance not found with technician: " + technician);
+        }
+        return null;
+    }
+
+    @Override
+    public long getTotalMaintenances() {
+        return maintenanceRepository.getTotalMaintenance();
+    }
+
 }

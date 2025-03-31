@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 public class BorrowingRequest {
     int equipmentId;
-    int userId;
+    int usersId;
     LocalDateTime borrowDate;
     LocalDateTime returnDate;
     String status;

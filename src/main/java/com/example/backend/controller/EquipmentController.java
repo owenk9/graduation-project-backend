@@ -42,6 +42,9 @@ public class EquipmentController {
         } else {
             equipmentPage = equipmentService.getAllEquipment(pageable);
         }
+        if(equipmentPage.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(equipmentPage);
     }
     @GetMapping("/get/{id}")

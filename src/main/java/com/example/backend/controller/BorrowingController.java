@@ -43,17 +43,25 @@ public class BorrowingController {
         return ResponseEntity.ok(borrowingResponse);
     }
 
-//    @GetMapping("/get/borrowing")
-//    public ResponseEntity<Page<BorrowingResponse>> getAllBorrowings(@RequestParam(required = false) Integer equipmentId,
-//                                                                    @RequestParam(required = false) Integer userId,
-//                                                                    @RequestParam(defaultValue = "0") int page,
-//                                                                    @RequestParam(defaultValue = "10") int size) {
-//       Pageable pageable = PageRequest.of(page, size);
-//       Page<BorrowingResponse> borrowingPage;
-//       if(equipmentId != null && userId != null){
-//           throw new InvalidRequestException("Cannot provide both equipmentId and userId");
-//       } else if(equipmentId != null){
-//           borrowingPage = borrowingService.
-//       }
-//    }
+    @GetMapping("/get")
+    public ResponseEntity<Page<BorrowingResponse>> getAllBorrowings(@RequestParam(required = false) Integer equipmentId,
+                                                                    @RequestParam(required = false) Integer usersId,
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "10") int size) {
+       Pageable pageable = PageRequest.of(page, size);
+       Page<BorrowingResponse> borrowingPage;
+       if(equipmentId != null && usersId != null){
+           throw new InvalidRequestException("Cannot provide both equipmentId and usersId");
+       } else if(equipmentId != null){
+           borrowingPage = borrowingService.findBorrowingByEquipmentId(equipmentId, pageable);
+       } else if(usersId != null){
+           borrowingPage = borrowingService.findBorrowingByUsersId(usersId, pageable);
+       } else {
+           borrowingPage = borrowingService.getAllBorrowings(pageable);
+       }
+       if(borrowingPage.isEmpty()){
+           return ResponseEntity.noContent().build();
+       }
+       return ResponseEntity.ok(borrowingPage);
+    }
 }

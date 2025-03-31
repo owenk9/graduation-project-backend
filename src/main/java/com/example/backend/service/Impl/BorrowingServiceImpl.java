@@ -38,7 +38,7 @@ public class BorrowingServiceImpl implements BorrowingService {
     public BorrowingResponse addBorrowing(BorrowingRequest borrowingRequest) {
         Borrowing borrowing = borrowingMapper.toBorrowing(borrowingRequest);
         borrowing.setEquipment(getEquipmentById(borrowingRequest.getEquipmentId()));
-        borrowing.setUsers(getUserById(borrowingRequest.getUserId()));
+        borrowing.setUsers(getUserById(borrowingRequest.getUsersId()));
         Borrowing savedBorrowing = borrowingRepository.save(borrowing);
         return borrowingMapper.toBorrowingResponse(savedBorrowing);
     }
@@ -50,7 +50,7 @@ public class BorrowingServiceImpl implements BorrowingService {
         existingBorrowing.setBorrowDate(borrowingRequest.getBorrowDate());
         existingBorrowing.setReturnDate(borrowingRequest.getReturnDate());
         existingBorrowing.setEquipment(getEquipmentById(borrowingRequest.getEquipmentId()));
-        existingBorrowing.setUsers(getUserById(borrowingRequest.getUserId()));
+        existingBorrowing.setUsers(getUserById(borrowingRequest.getUsersId()));
         existingBorrowing.setStatus(borrowingRequest.getStatus());
         Borrowing savedBorrowing = borrowingRepository.save(existingBorrowing);
         return borrowingMapper.toBorrowingResponse(savedBorrowing);
@@ -71,6 +71,24 @@ public class BorrowingServiceImpl implements BorrowingService {
     public Page<BorrowingResponse> getAllBorrowings(Pageable pageable) {
         Page<Borrowing> borrowings = borrowingRepository.findAll(pageable);
         return borrowings.map(borrowingMapper::toBorrowingResponse);
+    }
+
+    @Override
+    public Page<BorrowingResponse> findBorrowingByUsersId(int usersId, Pageable pageable) {
+        Page<Borrowing> borrowing = borrowingRepository.findBorrowingByUsersId(usersId, pageable);
+        if(borrowing.isEmpty()){
+            throw new ResourceNotFoundException("No borrowing found for user id: " + usersId);
+        }
+        return borrowing.map(borrowingMapper::toBorrowingResponse);
+    }
+
+    @Override
+    public Page<BorrowingResponse> findBorrowingByEquipmentId(int equipmentId, Pageable pageable) {
+        Page<Borrowing> borrowing = borrowingRepository.findBorrowingByEquipmentId(equipmentId, pageable);
+        if(borrowing.isEmpty()){
+            throw new ResourceNotFoundException("No borrowing found for equipment id: " + equipmentId);
+        }
+        return borrowing.map(borrowingMapper::toBorrowingResponse);
     }
 
     @Override
