@@ -12,13 +12,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class EquipmentRequest {
-    @NotNull(message = "Name cannot be null")
     String name;
+
     int quantity;
-    @NotNull(message = "Category ID cannot be null")
     Integer categoryId;
     String status;
-    @NotNull(message = "Location ID cannot be null")
     Integer locationId;
     LocalDateTime purchaseDate;
     String description;

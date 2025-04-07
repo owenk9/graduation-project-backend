@@ -17,6 +17,7 @@ public class Maintenance {
     private Equipment equipment;
     LocalDateTime maintenanceDate;
     String description;
+    String status;
     double cost;
     String technician;
 }

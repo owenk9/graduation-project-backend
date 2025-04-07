@@ -12,13 +12,16 @@ import com.example.backend.repository.CategoryRepository;
 import com.example.backend.repository.EquipmentRepository;
 import com.example.backend.repository.LocationRepository;
 import com.example.backend.service.EquipmentService;
+import com.example.backend.service.FileStorageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +33,7 @@ public class EquipmentServiceImpl implements EquipmentService{
     EquipmentRepository equipmentRepository;
     CategoryRepository categoryRepository;
     LocationRepository locationRepository;
+    FileStorageService fileStorageService;
     private Category getCategoryById(int categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
@@ -39,7 +43,7 @@ public class EquipmentServiceImpl implements EquipmentService{
                 .orElseThrow(() -> new ResourceNotFoundException("Location not found with id: " + locationId));
     }
     @Override
-    public EquipmentResponse addEquipment(EquipmentRequest equipmentRequest) {
+    public EquipmentResponse addEquipment(EquipmentRequest equipmentRequest, String imageUrl) {
         boolean equipmentExists = equipmentRepository.existsByName(equipmentRequest.getName());
         if(equipmentExists) {
             throw new DuplicateResourceException("Equipment with name " + equipmentRequest.getName() + " already exists");
@@ -47,12 +51,14 @@ public class EquipmentServiceImpl implements EquipmentService{
         Equipment equipment = equipmentMapper.toEquipment(equipmentRequest);
         equipment.setCategory(getCategoryById(equipmentRequest.getCategoryId()));
         equipment.setLocation(getLocationById(equipmentRequest.getLocationId()));
+        equipment.setImageUrl(imageUrl);
         Equipment savedEquipment = equipmentRepository.save(equipment);
         return equipmentMapper.toEquipmentResponse(savedEquipment);
     }
 
     @Override
-    public EquipmentResponse updateEquipment(int id, EquipmentRequest equipmentRequest) {
+    @Transactional
+    public EquipmentResponse updateEquipment(int id, EquipmentRequest equipmentRequest, String imageUrl) {
         Equipment existingEquipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Equipment not found with id: " + id));
         existingEquipment.setName(equipmentRequest.getName());
@@ -61,6 +67,21 @@ public class EquipmentServiceImpl implements EquipmentService{
         existingEquipment.setDescription(equipmentRequest.getDescription());
         existingEquipment.setCategory(getCategoryById(equipmentRequest.getCategoryId()));
         existingEquipment.setLocation(getLocationById(equipmentRequest.getLocationId()));
+        if (imageUrl != null) {
+            // Delete the old image if it exists
+            String oldImageUrl = existingEquipment.getImageUrl();
+            if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                try {
+                    String fileName = oldImageUrl.substring(oldImageUrl.lastIndexOf("/") + 1);
+                    fileStorageService.deleteFile(fileName);
+                } catch (IOException e) {
+                    // Log the exception but continue with the update
+                    System.err.println("Failed to delete old image: " + e.getMessage());
+                }
+            }
+            existingEquipment.setImageUrl(imageUrl);
+        }
+
         Equipment updatedEquipment = equipmentRepository.save(existingEquipment);
         return equipmentMapper.toEquipmentResponse(updatedEquipment);
     }

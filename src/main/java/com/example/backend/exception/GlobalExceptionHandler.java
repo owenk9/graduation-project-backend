@@ -59,4 +59,10 @@ public class GlobalExceptionHandler {
         ErrorResponse error = createErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), webRequest);
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ErrorResponse> handleFileStorageException(FileStorageException ex, WebRequest webRequest) {
+        ErrorResponse error = createErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), webRequest);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }

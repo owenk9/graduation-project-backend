@@ -8,8 +8,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.Map;
 
 public interface EquipmentService {
-    EquipmentResponse addEquipment(EquipmentRequest equipmentRequest);
-    EquipmentResponse updateEquipment(int id, EquipmentRequest equipmentRequest);
+    EquipmentResponse addEquipment(EquipmentRequest equipmentRequest, String imageUrl);
+    EquipmentResponse updateEquipment(int id, EquipmentRequest equipmentRequest, String imageUrl);
     EquipmentResponse getEquipmentById(int id);
     Page<EquipmentResponse> getAllEquipment(Pageable pageable);
     void deleteEquipmentById(int id);

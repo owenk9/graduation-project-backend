@@ -17,6 +17,7 @@ public class Equipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     String name;
+    String imageUrl;
     int quantity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

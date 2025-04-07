@@ -11,6 +11,7 @@ import java.util.List;
 public class EquipmentResponse {
     int id;
     String name;
+    String imageUrl;
     int quantity;
     int categoryId;
     String status;
