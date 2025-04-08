@@ -48,7 +48,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
         return ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/files")
+                .path("/files/")
                 .path(fileName)
                 .toUriString();
     }

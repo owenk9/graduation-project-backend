@@ -62,6 +62,7 @@ public class EquipmentServiceImpl implements EquipmentService{
         Equipment existingEquipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Equipment not found with id: " + id));
         existingEquipment.setName(equipmentRequest.getName());
+        existingEquipment.setQuantity(equipmentRequest.getQuantity());
         existingEquipment.setStatus(equipmentRequest.getStatus());
         existingEquipment.setPurchaseDate(equipmentRequest.getPurchaseDate());
         existingEquipment.setDescription(equipmentRequest.getDescription());
