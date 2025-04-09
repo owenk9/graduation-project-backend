@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface EquipmentMapper {
     Equipment toEquipment(EquipmentRequest equipmentRequest);
-    @Mapping(source = "category.id", target = "categoryId")
-    @Mapping(source = "location.id", target = "locationId")
+    @Mapping(source = "category.categoryName", target = "categoryName")
+    @Mapping(source = "location.locationName", target = "locationName")
     EquipmentResponse toEquipmentResponse(Equipment equipment);
 }

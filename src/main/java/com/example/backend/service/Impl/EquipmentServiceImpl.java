@@ -96,6 +96,7 @@ public class EquipmentServiceImpl implements EquipmentService{
     @Override
     public Page<EquipmentResponse> getAllEquipment(Pageable pageable) {
         Page<Equipment> getAll = equipmentRepository.findAll(pageable);
+
         return getAll.map(equipmentMapper::toEquipmentResponse);
     }
 

@@ -10,5 +10,4 @@ public class CategoryResponse {
     int id;
     String categoryName;
     String description;
-    List<Equipment> equipment;
 }

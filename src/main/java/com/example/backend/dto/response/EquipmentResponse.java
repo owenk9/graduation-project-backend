@@ -13,9 +13,9 @@ public class EquipmentResponse {
     String name;
     String imageUrl;
     int quantity;
-    int categoryId;
+    String categoryName;
     String status;
-    int locationId;
+    String locationName;
     LocalDateTime purchaseDate;
     String description;
 }

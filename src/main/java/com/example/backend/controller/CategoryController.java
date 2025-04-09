@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,10 +32,11 @@ public class CategoryController {
         return ResponseEntity.ok(updateCategory);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/get-all")
     public ResponseEntity<Page<CategoryResponse>> getAllCategory(@RequestParam(defaultValue = "0") int page,
                                                                  @RequestParam(defaultValue = "10") int pageSize){
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
         Page<CategoryResponse> getAllCategory = categoryService.getAllCategory(pageable);
         return ResponseEntity.ok(getAllCategory);
     }

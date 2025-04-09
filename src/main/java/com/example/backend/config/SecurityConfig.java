@@ -53,6 +53,9 @@ public class SecurityConfig {
                                 .requestMatchers("/user/**").permitAll()
                                 .requestMatchers("/borrowing/**").permitAll()
                                 .requestMatchers("/home/**").permitAll()
+                                .requestMatchers("/files/**").permitAll()
+                                .requestMatchers("/category/**").permitAll()
+                                .requestMatchers("/location/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
