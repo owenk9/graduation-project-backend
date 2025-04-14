@@ -26,7 +26,7 @@ public class LocationController {
         return ResponseEntity.status(201).body(addLocation);
     }
 
-    @PatchMapping("update/{id}")
+    @PatchMapping("/update/{id}")
     public ResponseEntity<LocationResponse> updateLocation(@PathVariable int id, @RequestBody LocationRequest locationRequest){
         LocationResponse updateLocation = locationService.updateLocation(id, locationRequest);
         return ResponseEntity.ok(updateLocation);

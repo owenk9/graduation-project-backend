@@ -45,6 +45,7 @@ public class EquipmentController {
     @GetMapping("/get")
     public ResponseEntity<Page<EquipmentResponse>> getEquipment(@RequestParam(required = false) Integer locationId,
                                                                 @RequestParam(required = false) Integer categoryId,
+                                                                @RequestParam(required = false) String name,
                                                                 @RequestParam(defaultValue = "0") int page,
                                                                 @RequestParam(defaultValue = "10") int size){
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
@@ -52,6 +53,10 @@ public class EquipmentController {
         Page<EquipmentResponse> equipmentPage;
         if (locationId != null && categoryId != null) {
             throw new InvalidRequestException("Cannot provide both locationId and categoryId");
+        } else if (name != null && (locationId != null || categoryId != null)) {
+            throw new InvalidRequestException("Cannot combine name with locationId or categoryId");
+        } else if (name != null) {
+            equipmentPage = equipmentService.findEquipmentByName(name, pageable);
         } else if (locationId != null) {
             equipmentPage = equipmentService.findEquipmentByLocationId(locationId, pageable);
         } else if (categoryId != null) {
@@ -59,9 +64,7 @@ public class EquipmentController {
         } else {
             equipmentPage = equipmentService.getAllEquipment(pageable);
         }
-        if(equipmentPage.isEmpty()){
-            return ResponseEntity.noContent().build();
-        }
+       
         return ResponseEntity.ok(equipmentPage);
     }
 
@@ -91,4 +94,6 @@ public class EquipmentController {
         equipmentService.deleteEquipmentById(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

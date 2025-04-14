@@ -2,7 +2,9 @@ package com.example.backend.service.Impl;
 
 import com.example.backend.dto.request.CategoryRequest;
 import com.example.backend.dto.response.CategoryResponse;
+import com.example.backend.dto.response.EquipmentResponse;
 import com.example.backend.entity.Category;
+import com.example.backend.entity.Equipment;
 import com.example.backend.exception.DuplicateResourceException;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.CategoryMapper;
@@ -55,5 +57,11 @@ public class CategoryServiceImpl implements CategoryService {
     public Page<CategoryResponse> getAllCategory(Pageable pageable) {
         Page<Category> getAll = categoryRepository.findAll(pageable);
         return getAll.map(categoryMapper::toCategoryResponse);
+    }
+
+    @Override
+    public Page<CategoryResponse> findCategoryByName(String name, Pageable pageable) {
+        Page<Category> category = categoryRepository.findByCategoryNameContainingIgnoreCase(name, pageable);
+        return category.map(categoryMapper::toCategoryResponse);
     }
 }

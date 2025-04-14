@@ -17,4 +17,5 @@ public interface EquipmentRepository extends JpaRepository<Equipment, Integer> {
     @Query("select count(e) from Equipment e")
     long getTotalEquipment();
     long countByStatus(String status);
+    Page<Equipment> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

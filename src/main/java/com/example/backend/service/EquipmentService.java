@@ -17,4 +17,5 @@ public interface EquipmentService {
     Page<EquipmentResponse> findEquipmentByCategoryId(int categoryId, Pageable pageable);
     long getTotalEquipment();
     Map<String, Long> countByStatus();
+    Page<EquipmentResponse> findEquipmentByName(String name, Pageable pageable);
 }

@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.CategoryRequest;
 import com.example.backend.dto.response.CategoryResponse;
+import com.example.backend.dto.response.EquipmentResponse;
 import com.example.backend.entity.Category;
 import com.example.backend.service.CategoryService;
 import lombok.AccessLevel;
@@ -32,13 +33,19 @@ public class CategoryController {
         return ResponseEntity.ok(updateCategory);
     }
 
-    @GetMapping("/get-all")
-    public ResponseEntity<Page<CategoryResponse>> getAllCategory(@RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "10") int pageSize){
+    @GetMapping("/get")
+    public ResponseEntity<Page<CategoryResponse>> getCategory(@RequestParam(required = false) String name,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int pageSize){
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<CategoryResponse> getAllCategory = categoryService.getAllCategory(pageable);
-        return ResponseEntity.ok(getAllCategory);
+        Page<CategoryResponse> categoryPage;
+        if(name != null){
+            categoryPage = categoryService.findCategoryByName(name,pageable);
+        } else {
+            categoryPage = categoryService.getAllCategory(pageable);
+        }
+        return ResponseEntity.ok(categoryPage);
     }
 
     @GetMapping("/get/{id}")

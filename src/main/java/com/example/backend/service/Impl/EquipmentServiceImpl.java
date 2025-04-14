@@ -137,4 +137,10 @@ public class EquipmentServiceImpl implements EquipmentService{
         return equipmentByStatus;
     }
 
+    @Override
+    public Page<EquipmentResponse> findEquipmentByName(String name, Pageable pageable) {
+        Page<Equipment> equipment = equipmentRepository.findByNameContainingIgnoreCase(name, pageable);
+        return equipment.map(equipmentMapper::toEquipmentResponse);
+    }
+
 }
