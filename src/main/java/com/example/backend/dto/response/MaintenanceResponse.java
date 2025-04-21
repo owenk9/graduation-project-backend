@@ -8,9 +8,10 @@ import java.time.LocalDateTime;
 @Setter
 public class MaintenanceResponse {
     int id;
-    int equipmentId;
+    String equipmentName;
     LocalDateTime maintenanceDate;
     String description;
+    String status;
     double cost;
     String technician;
 }

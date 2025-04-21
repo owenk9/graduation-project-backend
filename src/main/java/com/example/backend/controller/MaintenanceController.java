@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.request.MaintenanceRequest;
+import com.example.backend.dto.response.EquipmentResponse;
 import com.example.backend.dto.response.MaintenanceResponse;
 import com.example.backend.entity.Maintenance;
 import com.example.backend.exception.InvalidRequestException;
@@ -11,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,22 +48,25 @@ public class MaintenanceController {
     @GetMapping("/get")
     public ResponseEntity<Page<MaintenanceResponse>> getMaintenance(@RequestParam(required = false) Integer equipmentId,
                                                               @RequestParam(required = false) String technician,
+                                                              @RequestParam(required = false) String name,
                                                               @RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
         Page<MaintenanceResponse> maintenancePage;
-        if(equipmentId != null && technician != null) {
-            throw new InvalidRequestException("Cannot provide equipmentId and technician");
-        } else if(equipmentId != null) {
+        if (equipmentId != null && (technician != null || name != null)) {
+            throw new InvalidRequestException("Cannot combine equipmentId with technician or name");
+        } else if (technician != null && name != null) {
+            throw new InvalidRequestException("Cannot combine technician with name");
+        } else if (name != null) {
+            maintenancePage = maintenanceService.findMaintenanceByEquipmentName(name, pageable);
+        } else if (equipmentId != null) {
             maintenancePage = maintenanceService.findMaintenanceByEquipmentId(equipmentId, pageable);
-        } else if(technician != null) {
+        } else if (technician != null) {
             maintenancePage = maintenanceService.findMaintenanceByTechnician(technician, pageable);
         } else {
             maintenancePage = maintenanceService.getAllMaintenances(pageable);
         }
-        if(maintenancePage.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(maintenancePage);
-    }
+
+        return ResponseEntity.ok(maintenancePage);    }
 }

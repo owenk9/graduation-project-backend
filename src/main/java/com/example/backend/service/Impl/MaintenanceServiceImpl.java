@@ -36,14 +36,16 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public MaintenanceResponse updateMaintenance(int id, MaintenanceRequest maintenancerequest) {
-        Maintenance maintenance = maintenanceMapper.toMaintenance(maintenancerequest);
-        maintenance.setEquipment(findEquipmentById(maintenancerequest.getEquipmentId()));
-        maintenance.setMaintenanceDate(maintenancerequest.getMaintenanceDate());
-        maintenance.setDescription(maintenancerequest.getDescription());
-        maintenance.setCost(maintenancerequest.getCost());
-        maintenance.setTechnician(maintenancerequest.getTechnician());
-        Maintenance savedMaintenance = maintenanceRepository.save(maintenance);
-        return maintenanceMapper.toMaintenanceResponse(savedMaintenance);
+        Maintenance existingMaintenance = maintenanceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Maintenance not found with id: " + id));
+
+        existingMaintenance.setEquipment(findEquipmentById(maintenancerequest.getEquipmentId()));
+        existingMaintenance.setMaintenanceDate(maintenancerequest.getMaintenanceDate());
+        existingMaintenance.setDescription(maintenancerequest.getDescription());
+        existingMaintenance.setStatus(maintenancerequest.getStatus());
+        existingMaintenance.setCost(maintenancerequest.getCost());
+        existingMaintenance.setTechnician(maintenancerequest.getTechnician());
+        Maintenance updatedMaintenance = maintenanceRepository.save(existingMaintenance);
+        return maintenanceMapper.toMaintenanceResponse(updatedMaintenance);
     }
 
     @Override
@@ -74,10 +76,23 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public Page<MaintenanceResponse> findMaintenanceByTechnician(String technician, Pageable pageable) {
-        Page<Maintenance> maintenance = maintenanceRepository.findMaintenanceByTechnician(technician, pageable);
+        Page<Maintenance> maintenance = maintenanceRepository.findByTechnicianContainingIgnoreCase(technician, pageable);
         if(maintenance.isEmpty()){
             throw new ResourceNotFoundException("Maintenance not found with technician: " + technician);
         }
+        return maintenance.map(maintenanceMapper::toMaintenanceResponse);
+    }
+
+    @Override
+    public Page<MaintenanceResponse> findMaintenanceByEquipmentName(String equipmentName, Pageable pageable) {
+        Page<Maintenance> maintenance = maintenanceRepository.findByEquipmentNameContainingIgnoreCase(equipmentName, pageable);
+        return maintenance.map(maintenanceMapper::toMaintenanceResponse);
+    }
+
+    @Override
+    public Page<MaintenanceResponse> findEquipmentNameByEquipmentId(int equipmentId, Pageable pageable) {
+        Page<Maintenance> maintenances = maintenanceRepository.findEquipmentNameByEquipmentId(equipmentId, pageable);
+
         return null;
     }
 

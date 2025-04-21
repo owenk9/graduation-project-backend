@@ -2,8 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.dto.request.MaintenanceRequest;
 import com.example.backend.dto.response.MaintenanceResponse;
-import com.example.backend.entity.Maintenance;
-import com.example.backend.repository.MaintenanceRepository;
+import com.sun.tools.javac.Main;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,5 +14,7 @@ public interface MaintenanceService {
     Page<MaintenanceResponse> getAllMaintenances(Pageable pageable);
     Page<MaintenanceResponse>  findMaintenanceByEquipmentId(int equipmentId, Pageable pageable);
     Page<MaintenanceResponse> findMaintenanceByTechnician(String technician, Pageable pageable);
+    Page<MaintenanceResponse> findMaintenanceByEquipmentName(String equipmentName, Pageable pageable);
+    Page<MaintenanceResponse> findEquipmentNameByEquipmentId(int equipmentId, Pageable pageable);
     long getTotalMaintenances();
 }
