@@ -15,7 +15,6 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     String locationName;
-    @JsonIgnore
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Equipment> equipment;
 }

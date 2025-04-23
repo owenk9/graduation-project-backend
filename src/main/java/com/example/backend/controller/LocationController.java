@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.LocationRequest;
 import com.example.backend.dto.response.LocationResponse;
+import com.example.backend.entity.Location;
 import com.example.backend.service.LocationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +33,19 @@ public class LocationController {
         return ResponseEntity.ok(updateLocation);
     }
 
-    @GetMapping("/get-all")
-    public ResponseEntity<Page<LocationResponse>> getAllLocation(@RequestParam(defaultValue = "0") int page,
+    @GetMapping("/get")
+    public ResponseEntity<Page<LocationResponse>> getAllLocation(@RequestParam(required = false) String name,
+                                                                 @RequestParam(defaultValue = "0") int page,
                                                                  @RequestParam(defaultValue = "10") int pageSize){
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable = PageRequest.of(page, pageSize, sort);
-        Page<LocationResponse> getAllLocation = locationService.getAllLocation(pageable);
-        return ResponseEntity.ok(getAllLocation);
+        Page<LocationResponse> locationPage;
+        if(name != null){
+            locationPage = locationService.findLocationByName(name, pageable);
+        } else {
+            locationPage = locationService.getAllLocation(pageable);
+        }
+        return ResponseEntity.ok(locationPage);
     }
 
     @GetMapping("/get/{id}")

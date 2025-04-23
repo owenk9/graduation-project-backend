@@ -55,4 +55,10 @@ public class LocationServiceImpl implements LocationService {
         Page<Location> getAll = locationRepository.findAll(pageable);
         return getAll.map(locationMapper::toLocationResponse);
     }
+
+    @Override
+    public Page<LocationResponse> findLocationByName(String name, Pageable pageable) {
+        Page<Location> locations = locationRepository.findByLocationNameContainingIgnoreCase(name, pageable);
+        return locations.map(locationMapper::toLocationResponse);
+    }
 }

@@ -15,4 +15,5 @@ public interface LocationService {
     void deleteLocation(int id);
     LocationResponse getLocationById(int id);
     Page<LocationResponse> getAllLocation(Pageable pageable);
+    Page<LocationResponse> findLocationByName(String name, Pageable pageable);
 }
