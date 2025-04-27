@@ -56,6 +56,7 @@ public class SecurityConfig {
                                 .requestMatchers("/files/**").permitAll()
                                 .requestMatchers("/category/**").permitAll()
                                 .requestMatchers("/location/**").permitAll()
+                                .requestMatchers("/user/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -76,10 +77,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Cho phép React frontend
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        configuration.setAllowCredentials(true); // Cho phép gửi cookie nếu có
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
+        configuration.setExposedHeaders(List.of("Authorization")); // Thêm dòng này
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

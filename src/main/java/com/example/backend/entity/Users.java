@@ -23,5 +23,5 @@ public class Users {
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Borrowing> borrowing;
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<UserRole> userRoles; // Quan hệ mới với UserRole
+    private Set<UserRole> userRoles;
 }

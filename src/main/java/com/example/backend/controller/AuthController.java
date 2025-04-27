@@ -34,11 +34,8 @@ public class AuthController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             String jwt = jwtUtil.generateToken(userDetails);
-            System.out.println("Login successful, JWT: " + jwt);
             return ResponseEntity.ok(jwt);
-        } catch (Exception e) { // Đổi từ AuthenticationException thành Exception để bắt tất cả lỗi
-            System.out.println("Error during login: " + e.getMessage());
-            e.printStackTrace(); // In stack trace để debug
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
         }
     }

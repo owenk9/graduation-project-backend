@@ -22,39 +22,51 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        System.out.println("Getting authorities for user: " + user.getEmail());
 
         Set<UserRole> userRoles = user.getUserRoles();
-        if (userRoles != null && Hibernate.isInitialized(userRoles)) {
-            for (UserRole userRole : new ArrayList<>(userRoles)) { // Sao chép để tránh lỗi
-                Role role = userRole.getRole();
-                if (role != null) {
-                    String roleName = role.getRoleName();
-                    System.out.println("Role: " + roleName);
-                    authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
-
-                    Set<RolePermission> rolePermissions = role.getRolePermission();
-                    if (rolePermissions != null && Hibernate.isInitialized(rolePermissions)) {
-                        for (RolePermission rolePermission : new ArrayList<>(rolePermissions)) {
-                            if (rolePermission.getPermission() != null) {
-                                String permissionName = rolePermission.getPermission().getPermissionName();
-                                System.out.println("Permission: " + permissionName);
-                                authorities.add(new SimpleGrantedAuthority(permissionName));
-                            }
-                        }
-                    } else {
-                        System.out.println("Role permissions are null for role: " + roleName);
-                    }
-                } else {
-                    System.out.println("Role is null in UserRole");
-                }
-            }
-        } else {
-            System.out.println("User roles are null");
+        if (userRoles == null || !Hibernate.isInitialized(userRoles)) {
+            throw new RuntimeException("User roles are not available or not initialized for user: " + user.getEmail());
         }
+
+        for (UserRole userRole : new ArrayList<>(userRoles)) {
+            Role role = userRole.getRole();
+            if (role == null) {
+                throw new RuntimeException("Role is null in UserRole for user: " + user.getEmail());
+            }
+
+            String roleName = role.getRoleName();
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
+
+            Set<RolePermission> rolePermissions = role.getRolePermission();
+            if (rolePermissions == null || !Hibernate.isInitialized(rolePermissions)) {
+                throw new RuntimeException("Role permissions are null or not initialized for role: " + roleName);
+            }
+
+            for (RolePermission rolePermission : new ArrayList<>(rolePermissions)) {
+                if (rolePermission.getPermission() == null) {
+                    throw new RuntimeException("Permission is null in RolePermission for role: " + roleName);
+                }
+
+                String permissionName = rolePermission.getPermission().getPermissionName();
+                authorities.add(new SimpleGrantedAuthority(permissionName));
+            }
+        }
+
         return authorities;
     }
 
+    public String getFullName() {
+        return (user.getFirstName() + " " + user.getLastName()).trim();
+    }
+
+
+    public String getRole() {
+        Set<UserRole> userRoles = user.getUserRoles();
+        if (userRoles != null && !userRoles.isEmpty()) {
+            return userRoles.iterator().next().getRole().getRoleName();
+        }
+        return "USER";
+    }
     @Override
     public String getPassword() {
         return user.getPassword();
