@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -140,6 +141,23 @@ public class EquipmentServiceImpl implements EquipmentService{
     @Override
     public Page<EquipmentResponse> findEquipmentByName(String name, Pageable pageable) {
         Page<Equipment> equipment = equipmentRepository.findByNameContainingIgnoreCase(name, pageable);
+        return equipment.map(equipmentMapper::toEquipmentResponse);
+    }
+
+    @Override
+    public Page<EquipmentResponse> findEquipmentByStatus(String status, Pageable pageable) {
+        Page<Equipment> equipment = equipmentRepository.findByStatus(status, pageable);
+        return equipment.map(equipmentMapper::toEquipmentResponse);
+    }
+
+    @Override
+    public List<String> findAllDistinctStatuses() {
+        return equipmentRepository.findAllDistinctStatuses();
+    }
+
+    @Override
+    public Page<EquipmentResponse> filter(Integer locationId, Integer categoryId, String name, String status, Pageable pageable) {
+        Page<Equipment> equipment = equipmentRepository.filter(locationId, categoryId, name, status, pageable);
         return equipment.map(equipmentMapper::toEquipmentResponse);
     }
 

@@ -5,6 +5,7 @@ import com.example.backend.dto.response.EquipmentResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Map;
 
 public interface EquipmentService {
@@ -18,4 +19,7 @@ public interface EquipmentService {
     long getTotalEquipment();
     Map<String, Long> countByStatus();
     Page<EquipmentResponse> findEquipmentByName(String name, Pageable pageable);
+    Page<EquipmentResponse> findEquipmentByStatus(String status, Pageable pageable);
+    List<String> findAllDistinctStatuses();
+    Page<EquipmentResponse> filter(Integer locationId, Integer categoryId, String name, String status, Pageable pageable);
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/equipment")
@@ -30,7 +31,7 @@ public class EquipmentController {
 
     @PostMapping(value = "/add", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<EquipmentResponse> addEquipment(
-            @RequestPart("equipment") @Valid EquipmentRequest equipmentRequest,
+            @RequestPart("equipment") EquipmentRequest equipmentRequest,
             @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
 
         String imageUrl = null;
@@ -46,28 +47,20 @@ public class EquipmentController {
     public ResponseEntity<Page<EquipmentResponse>> getEquipment(@RequestParam(required = false) Integer locationId,
                                                                 @RequestParam(required = false) Integer categoryId,
                                                                 @RequestParam(required = false) String name,
+                                                                @RequestParam(required = false) String status,
                                                                 @RequestParam(defaultValue = "0") int page,
                                                                 @RequestParam(defaultValue = "10") int size){
         Sort sort = Sort.by(Sort.Direction.ASC, "id");
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<EquipmentResponse> equipmentPage;
-        if (locationId != null && categoryId != null) {
-            throw new InvalidRequestException("Cannot provide both locationId and categoryId");
-        } else if (name != null && (locationId != null || categoryId != null)) {
-            throw new InvalidRequestException("Cannot combine name with locationId or categoryId");
-        } else if (name != null) {
-            equipmentPage = equipmentService.findEquipmentByName(name, pageable);
-        } else if (locationId != null) {
-            equipmentPage = equipmentService.findEquipmentByLocationId(locationId, pageable);
-        } else if (categoryId != null) {
-            equipmentPage = equipmentService.findEquipmentByCategoryId(categoryId, pageable);
-        } else {
-            equipmentPage = equipmentService.getAllEquipment(pageable);
-        }
-       
+        Page<EquipmentResponse> equipmentPage = equipmentService.filter(locationId, categoryId, name, status, pageable);
         return ResponseEntity.ok(equipmentPage);
     }
 
+    @GetMapping("/get-statuses")
+    public ResponseEntity<List<String>> getAllStatuses() {
+        List<String> statuses = equipmentService.findAllDistinctStatuses();
+        return ResponseEntity.ok(statuses);
+    }
     @GetMapping("/get/{id}")
     public ResponseEntity<EquipmentResponse> getEquipmentById(@PathVariable int id){
         EquipmentResponse getEquipment = equipmentService.getEquipmentById(id);
@@ -94,6 +87,7 @@ public class EquipmentController {
         equipmentService.deleteEquipmentById(id);
         return ResponseEntity.noContent().build();
     }
+
 
 
 }
