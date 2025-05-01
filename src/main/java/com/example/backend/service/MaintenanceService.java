@@ -12,9 +12,9 @@ public interface MaintenanceService {
     void deleteMaintenance(int id);
     MaintenanceResponse findMaintenanceById(int id);
     Page<MaintenanceResponse> getAllMaintenances(Pageable pageable);
-    Page<MaintenanceResponse>  findMaintenanceByEquipmentId(int equipmentId, Pageable pageable);
+//    Page<MaintenanceResponse>  findMaintenanceByEquipmentId(int equipmentId, Pageable pageable);
     Page<MaintenanceResponse> findMaintenanceByTechnician(String technician, Pageable pageable);
-    Page<MaintenanceResponse> findMaintenanceByEquipmentName(String equipmentName, Pageable pageable);
-    Page<MaintenanceResponse> findEquipmentNameByEquipmentId(int equipmentId, Pageable pageable);
+//    Page<MaintenanceResponse> findMaintenanceByEquipmentName(String equipmentName, Pageable pageable);
+//    Page<MaintenanceResponse> findEquipmentNameByEquipmentId(int equipmentId, Pageable pageable);
     long getTotalMaintenances();
 }

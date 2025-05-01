@@ -15,7 +15,7 @@ public interface BorrowingService {
     BorrowingResponse getBorrowingById(int id);
     Page<BorrowingResponse> getAllBorrowings(Pageable pageable);
     Page<BorrowingResponse> findBorrowingByUsersId(int usersId, Pageable pageable);
-    Page<BorrowingResponse> findBorrowingByEquipmentId(int equipmentId, Pageable pageable);
+    Page<BorrowingResponse> findBorrowingByEquipmentItemId(int equipmentItemId, Pageable pageable);
     long getTotalBorrowings();
 
 }

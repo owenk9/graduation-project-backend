@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "Spring")
 public interface MaintenanceMapper {
     Maintenance toMaintenance(MaintenanceRequest maintenanceRequest);
-@Mapping(source = "equipment.name", target = "equipmentName")
+    @Mapping(source = "equipmentItem.equipment.name", target = "equipmentName")
+    @Mapping(source = "equipmentItem.id", target = "equipmentItemId")
     MaintenanceResponse toMaintenanceResponse(Maintenance maintenance);
 }

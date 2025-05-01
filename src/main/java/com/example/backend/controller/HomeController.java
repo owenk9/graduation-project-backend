@@ -23,10 +23,10 @@ public class HomeController {
     public ResponseEntity<Long> getTotalEquipment() {
         return ResponseEntity.ok(equipmentService.getTotalEquipment());
     }
-    @GetMapping("/equipment-count")
-    public ResponseEntity<Map<String, Long>> countByStatus () {
-        return ResponseEntity.ok(equipmentService.countByStatus());
-    }
+//    @GetMapping("/equipment-count")
+//    public ResponseEntity<Map<String, Long>> countByStatus () {
+//        return ResponseEntity.ok(equipmentService.countByStatus());
+//    }
     @GetMapping("/total-borrowing")
     public ResponseEntity<Long> getTotalBorrowings() {
         return ResponseEntity.ok(borrowingService.getTotalBorrowings());

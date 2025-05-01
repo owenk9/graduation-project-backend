@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class MaintenanceRequest {
-    int equipmentId;
+    int equipmentItemId;
+    String serialNumber;
     LocalDateTime maintenanceDate;
     String description;
     String status;

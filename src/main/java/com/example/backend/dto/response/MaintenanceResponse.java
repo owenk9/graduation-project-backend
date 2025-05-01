@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 public class MaintenanceResponse {
     int id;
     String equipmentName;
+    int equipmentItemId;
+    String serialNumber;
     LocalDateTime maintenanceDate;
     String description;
     String status;

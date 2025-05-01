@@ -12,10 +12,7 @@ public class EquipmentResponse {
     int id;
     String name;
     String imageUrl;
-    int quantity;
     String categoryName;
-    String status;
-    String locationName;
     LocalDateTime purchaseDate;
     String description;
 }

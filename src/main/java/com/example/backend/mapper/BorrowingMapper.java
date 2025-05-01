@@ -10,6 +10,6 @@ import org.mapstruct.Mapping;
 public interface BorrowingMapper {
     Borrowing toBorrowing(BorrowingRequest borrowingRequest);
     @Mapping(source = "users.id", target = "usersId")
-    @Mapping(source = "equipment.id", target = "equipmentId")
+    @Mapping(source = "equipmentItem.id", target = "equipmentItemId")
     BorrowingResponse toBorrowingResponse(Borrowing borrowing);
 }

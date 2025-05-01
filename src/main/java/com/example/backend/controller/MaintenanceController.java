@@ -45,28 +45,28 @@ public class MaintenanceController {
         return ResponseEntity.ok(maintenance);
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<Page<MaintenanceResponse>> getMaintenance(@RequestParam(required = false) Integer equipmentId,
-                                                              @RequestParam(required = false) String technician,
-                                                              @RequestParam(required = false) String name,
-                                                              @RequestParam(defaultValue = "0") int page,
-                                                              @RequestParam(defaultValue = "10") int size) {
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<MaintenanceResponse> maintenancePage;
-        if (equipmentId != null && (technician != null || name != null)) {
-            throw new InvalidRequestException("Cannot combine equipmentId with technician or name");
-        } else if (technician != null && name != null) {
-            throw new InvalidRequestException("Cannot combine technician with name");
-        } else if (name != null) {
-            maintenancePage = maintenanceService.findMaintenanceByEquipmentName(name, pageable);
-        } else if (equipmentId != null) {
-            maintenancePage = maintenanceService.findMaintenanceByEquipmentId(equipmentId, pageable);
-        } else if (technician != null) {
-            maintenancePage = maintenanceService.findMaintenanceByTechnician(technician, pageable);
-        } else {
-            maintenancePage = maintenanceService.getAllMaintenances(pageable);
-        }
-
-        return ResponseEntity.ok(maintenancePage);    }
+//    @GetMapping("/get")
+//    public ResponseEntity<Page<MaintenanceResponse>> getMaintenance(@RequestParam(required = false) Integer equipmentId,
+//                                                              @RequestParam(required = false) String technician,
+//                                                              @RequestParam(required = false) String name,
+//                                                              @RequestParam(defaultValue = "0") int page,
+//                                                              @RequestParam(defaultValue = "10") int size) {
+//        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+//        Pageable pageable = PageRequest.of(page, size, sort);
+//        Page<MaintenanceResponse> maintenancePage;
+//        if (equipmentId != null && (technician != null || name != null)) {
+//            throw new InvalidRequestException("Cannot combine equipmentId with technician or name");
+//        } else if (technician != null && name != null) {
+//            throw new InvalidRequestException("Cannot combine technician with name");
+//        } else if (name != null) {
+//            maintenancePage = maintenanceService.findMaintenanceByEquipmentName(name, pageable);
+//        } else if (equipmentId != null) {
+//            maintenancePage = maintenanceService.findMaintenanceByEquipmentId(equipmentId, pageable);
+//        } else if (technician != null) {
+//            maintenancePage = maintenanceService.findMaintenanceByTechnician(technician, pageable);
+//        } else {
+//            maintenancePage = maintenanceService.getAllMaintenances(pageable);
+//        }
+//
+//        return ResponseEntity.ok(maintenancePage);    }
 }

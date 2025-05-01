@@ -13,10 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 public class EquipmentRequest {
     String name;
-    int quantity;
     Integer categoryId;
-    String status;
-    Integer locationId;
     LocalDateTime purchaseDate;
     String description;
 }

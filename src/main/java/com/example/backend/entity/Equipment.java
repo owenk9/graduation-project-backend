@@ -18,20 +18,11 @@ public class Equipment {
     int id;
     String name;
     String imageUrl;
-    int quantity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-    String status;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    private Location location;
     LocalDateTime purchaseDate;
     String description;
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Borrowing> borrowing;
-    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Maintenance> maintenance;
-
-
+    private List<EquipmentItem> equipmentItem;
 }

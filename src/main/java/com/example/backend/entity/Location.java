@@ -14,7 +14,8 @@ public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
+    @Column(nullable = false, unique = true)
     String locationName;
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Equipment> equipment;
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<EquipmentItem> equipmentItem;
 }

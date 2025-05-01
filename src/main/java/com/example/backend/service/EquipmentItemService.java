@@ -1,0 +1,18 @@
+package com.example.backend.service;
+
+import com.example.backend.dto.request.EquipmentItemRequest;
+import com.example.backend.dto.response.EquipmentItemResponse;
+import com.example.backend.dto.response.EquipmentResponse;
+import com.example.backend.entity.Equipment;
+
+import java.util.List;
+
+public interface EquipmentItemService {
+    EquipmentItemResponse addEquipmentItem(EquipmentItemRequest equipmentItemRequest);
+    EquipmentItemResponse updateEquipmentItem(int id, EquipmentItemRequest equipmentItemRequest);
+    void deleteEquipmentItem(int id);
+    EquipmentItemResponse getEquipmentItemById(int id);
+    long getTotalEquipmentItem();
+    List<EquipmentItemResponse> getAllEquipmentItems();
+    List<EquipmentItemResponse> getAllEquipmentItemByEquipmentId(int equipmentId);
+}

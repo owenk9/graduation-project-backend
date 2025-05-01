@@ -53,7 +53,7 @@ public class BorrowingController {
        if(equipmentId != null && usersId != null){
            throw new InvalidRequestException("Cannot provide both equipmentId and usersId");
        } else if(equipmentId != null){
-           borrowingPage = borrowingService.findBorrowingByEquipmentId(equipmentId, pageable);
+           borrowingPage = borrowingService.findBorrowingByEquipmentItemId(equipmentId, pageable);
        } else if(usersId != null){
            borrowingPage = borrowingService.findBorrowingByUsersId(usersId, pageable);
        } else {

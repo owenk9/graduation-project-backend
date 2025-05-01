@@ -10,6 +10,5 @@ import org.mapstruct.Mapping;
 public interface EquipmentMapper {
     Equipment toEquipment(EquipmentRequest equipmentRequest);
     @Mapping(source = "category.categoryName", target = "categoryName")
-    @Mapping(source = "location.locationName", target = "locationName")
     EquipmentResponse toEquipmentResponse(Equipment equipment);
 }

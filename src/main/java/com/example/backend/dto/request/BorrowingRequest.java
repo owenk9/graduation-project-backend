@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BorrowingRequest {
-    int equipmentId;
+    int equipmentItemId;
+    String serialNumber;
     int usersId;
     LocalDateTime borrowDate;
     LocalDateTime returnDate;

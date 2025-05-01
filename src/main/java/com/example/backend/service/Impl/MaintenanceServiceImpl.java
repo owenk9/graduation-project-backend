@@ -3,9 +3,12 @@ package com.example.backend.service.Impl;
 import com.example.backend.dto.request.MaintenanceRequest;
 import com.example.backend.dto.response.MaintenanceResponse;
 import com.example.backend.entity.Equipment;
+import com.example.backend.entity.EquipmentItem;
 import com.example.backend.entity.Maintenance;
+import com.example.backend.enums.MaintenanceStatus;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.MaintenanceMapper;
+import com.example.backend.repository.EquipmentItemRepository;
 import com.example.backend.repository.EquipmentRepository;
 import com.example.backend.repository.MaintenanceRepository;
 import com.example.backend.service.MaintenanceService;
@@ -23,13 +26,17 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     MaintenanceMapper maintenanceMapper;
     MaintenanceRepository maintenanceRepository;
     EquipmentRepository equipmentRepository;
+    EquipmentItemRepository equipmentItemRepository;
     private Equipment findEquipmentById(int id) {
         return equipmentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Equipment not found with id: " + id));
+    }
+    private EquipmentItem findEquipmentItemById(int id) {
+        return equipmentItemRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Equipment item not found with id: " + id));
     }
     @Override
     public MaintenanceResponse addMaintenance(MaintenanceRequest maintenancerequest) {
         Maintenance maintenance = maintenanceMapper.toMaintenance(maintenancerequest);
-        maintenance.setEquipment(findEquipmentById(maintenancerequest.getEquipmentId()));
+        maintenance.setEquipmentItem(findEquipmentItemById(maintenancerequest.getEquipmentItemId()));
         Maintenance savedMaintenance = maintenanceRepository.save(maintenance);
         return maintenanceMapper.toMaintenanceResponse(savedMaintenance);
     }
@@ -38,10 +45,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     public MaintenanceResponse updateMaintenance(int id, MaintenanceRequest maintenancerequest) {
         Maintenance existingMaintenance = maintenanceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Maintenance not found with id: " + id));
 
-        existingMaintenance.setEquipment(findEquipmentById(maintenancerequest.getEquipmentId()));
+        existingMaintenance.setEquipmentItem(findEquipmentItemById(maintenancerequest.getEquipmentItemId()));
         existingMaintenance.setMaintenanceDate(maintenancerequest.getMaintenanceDate());
         existingMaintenance.setDescription(maintenancerequest.getDescription());
-        existingMaintenance.setStatus(maintenancerequest.getStatus());
+        existingMaintenance.setStatus(MaintenanceStatus.valueOf(maintenancerequest.getStatus()));
         existingMaintenance.setCost(maintenancerequest.getCost());
         existingMaintenance.setTechnician(maintenancerequest.getTechnician());
         Maintenance updatedMaintenance = maintenanceRepository.save(existingMaintenance);
@@ -65,14 +72,14 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return maintenances.map(maintenanceMapper::toMaintenanceResponse);
     }
 
-    @Override
-    public Page<MaintenanceResponse> findMaintenanceByEquipmentId(int equipmentId, Pageable pageable) {
-        Page<Maintenance> maintenance = maintenanceRepository.findMaintenanceByEquipmentId(equipmentId, pageable);
-        if(maintenance.isEmpty()){
-            throw new ResourceNotFoundException("Maintenance not found with id: " + equipmentId);
-        }
-        return maintenance.map(maintenanceMapper::toMaintenanceResponse);
-    }
+//    @Override
+//    public Page<MaintenanceResponse> findMaintenanceByEquipmentId(int equipmentId, Pageable pageable) {
+//        Page<Maintenance> maintenance = maintenanceRepository.findMaintenanceByEquipmentId(equipmentId, pageable);
+//        if(maintenance.isEmpty()){
+//            throw new ResourceNotFoundException("Maintenance not found with id: " + equipmentId);
+//        }
+//        return maintenance.map(maintenanceMapper::toMaintenanceResponse);
+//    }
 
     @Override
     public Page<MaintenanceResponse> findMaintenanceByTechnician(String technician, Pageable pageable) {
@@ -83,18 +90,18 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return maintenance.map(maintenanceMapper::toMaintenanceResponse);
     }
 
-    @Override
-    public Page<MaintenanceResponse> findMaintenanceByEquipmentName(String equipmentName, Pageable pageable) {
-        Page<Maintenance> maintenance = maintenanceRepository.findByEquipmentNameContainingIgnoreCase(equipmentName, pageable);
-        return maintenance.map(maintenanceMapper::toMaintenanceResponse);
-    }
-
-    @Override
-    public Page<MaintenanceResponse> findEquipmentNameByEquipmentId(int equipmentId, Pageable pageable) {
-        Page<Maintenance> maintenances = maintenanceRepository.findEquipmentNameByEquipmentId(equipmentId, pageable);
-
-        return null;
-    }
+//    @Override
+//    public Page<MaintenanceResponse> findMaintenanceByEquipmentName(String equipmentName, Pageable pageable) {
+//        Page<Maintenance> maintenance = maintenanceRepository.findByEquipmentNameContainingIgnoreCase(equipmentName, pageable);
+//        return maintenance.map(maintenanceMapper::toMaintenanceResponse);
+//    }
+//
+//    @Override
+//    public Page<MaintenanceResponse> findEquipmentNameByEquipmentId(int equipmentId, Pageable pageable) {
+//        Page<Maintenance> maintenances = maintenanceRepository.findEquipmentNameByEquipmentId(equipmentId, pageable);
+//
+//        return null;
+//    }
 
     @Override
     public long getTotalMaintenances() {

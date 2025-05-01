@@ -4,10 +4,13 @@ import com.example.backend.dto.request.BorrowingRequest;
 import com.example.backend.dto.response.BorrowingResponse;
 import com.example.backend.entity.Borrowing;
 import com.example.backend.entity.Equipment;
+import com.example.backend.entity.EquipmentItem;
 import com.example.backend.entity.Users;
+import com.example.backend.enums.BorrowingStatus;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.BorrowingMapper;
 import com.example.backend.repository.BorrowingRepository;
+import com.example.backend.repository.EquipmentItemRepository;
 import com.example.backend.repository.EquipmentRepository;
 import com.example.backend.repository.UsersRepository;
 import com.example.backend.service.BorrowingService;
@@ -25,6 +28,7 @@ public class BorrowingServiceImpl implements BorrowingService {
     BorrowingMapper borrowingMapper;
     BorrowingRepository borrowingRepository;
     EquipmentRepository equipmentRepository;
+    EquipmentItemRepository equipmentItemRepository;
     UsersRepository usersRepository;
     private Equipment getEquipmentById(int equipmentId) {
         return equipmentRepository.findById(equipmentId)
@@ -34,10 +38,14 @@ public class BorrowingServiceImpl implements BorrowingService {
         return usersRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
     }
+    private EquipmentItem getEquipmentItemById(int equipmentItemId) {
+        return equipmentItemRepository.findById(equipmentItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Equipment item not found with id: " + equipmentItemId));
+    }
     @Override
     public BorrowingResponse addBorrowing(BorrowingRequest borrowingRequest) {
         Borrowing borrowing = borrowingMapper.toBorrowing(borrowingRequest);
-        borrowing.setEquipment(getEquipmentById(borrowingRequest.getEquipmentId()));
+        borrowing.setEquipmentItem(getEquipmentItemById(borrowingRequest.getEquipmentItemId()));
         borrowing.setUsers(getUserById(borrowingRequest.getUsersId()));
         Borrowing savedBorrowing = borrowingRepository.save(borrowing);
         return borrowingMapper.toBorrowingResponse(savedBorrowing);
@@ -49,9 +57,9 @@ public class BorrowingServiceImpl implements BorrowingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Borrowing not found with id: " + id));
         existingBorrowing.setBorrowDate(borrowingRequest.getBorrowDate());
         existingBorrowing.setReturnDate(borrowingRequest.getReturnDate());
-        existingBorrowing.setEquipment(getEquipmentById(borrowingRequest.getEquipmentId()));
+        existingBorrowing.setEquipmentItem(getEquipmentItemById(borrowingRequest.getEquipmentItemId()));
         existingBorrowing.setUsers(getUserById(borrowingRequest.getUsersId()));
-        existingBorrowing.setStatus(borrowingRequest.getStatus());
+        existingBorrowing.setStatus(BorrowingStatus.valueOf(borrowingRequest.getStatus()));
         Borrowing savedBorrowing = borrowingRepository.save(existingBorrowing);
         return borrowingMapper.toBorrowingResponse(savedBorrowing);
     }
@@ -83,10 +91,10 @@ public class BorrowingServiceImpl implements BorrowingService {
     }
 
     @Override
-    public Page<BorrowingResponse> findBorrowingByEquipmentId(int equipmentId, Pageable pageable) {
-        Page<Borrowing> borrowing = borrowingRepository.findBorrowingByEquipmentId(equipmentId, pageable);
+    public Page<BorrowingResponse> findBorrowingByEquipmentItemId(int equipmentItemId, Pageable pageable) {
+        Page<Borrowing> borrowing = borrowingRepository.findBorrowingByEquipmentItemId(equipmentItemId, pageable);
         if(borrowing.isEmpty()){
-            throw new ResourceNotFoundException("No borrowing found for equipment id: " + equipmentId);
+            throw new ResourceNotFoundException("No borrowing found for equipment id: " + equipmentItemId);
         }
         return borrowing.map(borrowingMapper::toBorrowingResponse);
     }

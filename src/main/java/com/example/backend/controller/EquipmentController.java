@@ -43,23 +43,28 @@ public class EquipmentController {
         return ResponseEntity.status(201).body(addEquipment);
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<Page<EquipmentResponse>> getEquipment(@RequestParam(required = false) Integer locationId,
-                                                                @RequestParam(required = false) Integer categoryId,
-                                                                @RequestParam(required = false) String name,
-                                                                @RequestParam(required = false) String status,
-                                                                @RequestParam(defaultValue = "0") int page,
-                                                                @RequestParam(defaultValue = "10") int size){
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<EquipmentResponse> equipmentPage = equipmentService.filter(locationId, categoryId, name, status, pageable);
-        return ResponseEntity.ok(equipmentPage);
-    }
+//    @GetMapping("/get")
+//    public ResponseEntity<Page<EquipmentResponse>> getEquipment(@RequestParam(required = false) Integer locationId,
+//                                                                @RequestParam(required = false) Integer categoryId,
+//                                                                @RequestParam(required = false) String name,
+//                                                                @RequestParam(required = false) String status,
+//                                                                @RequestParam(defaultValue = "0") int page,
+//                                                                @RequestParam(defaultValue = "10") int size){
+//        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+//        Pageable pageable = PageRequest.of(page, size, sort);
+//        Page<EquipmentResponse> equipmentPage = equipmentService.filter(locationId, categoryId, name, status, pageable);
+//        return ResponseEntity.ok(equipmentPage);
+//    }
 
-    @GetMapping("/get-statuses")
-    public ResponseEntity<List<String>> getAllStatuses() {
-        List<String> statuses = equipmentService.findAllDistinctStatuses();
-        return ResponseEntity.ok(statuses);
+//    @GetMapping("/get-statuses")
+//    public ResponseEntity<List<String>> getAllStatuses() {
+//        List<String> statuses = equipmentService.findAllDistinctStatuses();
+//        return ResponseEntity.ok(statuses);
+//    }
+    @GetMapping("/get")
+    public ResponseEntity<Page<EquipmentResponse>> getAllEquipment(Pageable pageable) {
+        Page<EquipmentResponse> equipmentResponse = equipmentService.getAllEquipment(pageable);
+        return ResponseEntity.status(200).body(equipmentResponse);
     }
     @GetMapping("/get/{id}")
     public ResponseEntity<EquipmentResponse> getEquipmentById(@PathVariable int id){

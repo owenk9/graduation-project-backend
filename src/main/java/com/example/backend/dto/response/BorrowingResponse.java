@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 @Setter
 public class BorrowingResponse {
     int id;
-    int equipmentId;
+    int equipmentItemId;
+    String serialNumber;
+    String equipmentName;
     int usersId;
     LocalDateTime borrowDate;
     LocalDateTime returnDate;

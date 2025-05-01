@@ -9,5 +9,5 @@ import java.util.List;
 public class LocationResponse {
     int id;
     String locationName;
-    List<EquipmentResponse> equipment;
+    List<EquipmentItemResponse> equipmentItem;
 }

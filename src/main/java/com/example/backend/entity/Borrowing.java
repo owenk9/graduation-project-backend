@@ -1,6 +1,7 @@
 package com.example.backend.entity;
 
 
+import com.example.backend.enums.BorrowingStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,14 +13,18 @@ import java.time.LocalDateTime;
 public class Borrowing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private int id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipment_id")
-    private Equipment equipment;
+    @JoinColumn(name = "equipmentItem_id", nullable = false)
+    private EquipmentItem equipmentItem;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id")
+    @JoinColumn(name = "users_id", nullable = false)
     private Users users;
-    LocalDateTime borrowDate;
-    LocalDateTime returnDate;
-    String status;
+    @Column(nullable = false)
+    private LocalDateTime borrowDate;
+    @Column(nullable = false)
+    private LocalDateTime returnDate;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BorrowingStatus status;
 }

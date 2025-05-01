@@ -14,12 +14,12 @@ public interface EquipmentService {
     EquipmentResponse getEquipmentById(int id);
     Page<EquipmentResponse> getAllEquipment(Pageable pageable);
     void deleteEquipmentById(int id);
-    Page<EquipmentResponse> findEquipmentByLocationId(int locationId, Pageable pageable);
+//    Page<EquipmentResponse> findEquipmentByLocationId(int locationId, Pageable pageable);
     Page<EquipmentResponse> findEquipmentByCategoryId(int categoryId, Pageable pageable);
     long getTotalEquipment();
-    Map<String, Long> countByStatus();
+//    Map<String, Long> countByStatus();
     Page<EquipmentResponse> findEquipmentByName(String name, Pageable pageable);
-    Page<EquipmentResponse> findEquipmentByStatus(String status, Pageable pageable);
-    List<String> findAllDistinctStatuses();
-    Page<EquipmentResponse> filter(Integer locationId, Integer categoryId, String name, String status, Pageable pageable);
+//    Page<EquipmentResponse> findEquipmentByStatus(String status, Pageable pageable);
+//    List<String> findAllDistinctStatuses();
+//    Page<EquipmentResponse> filter(Integer locationId, Integer categoryId, String name, String status, Pageable pageable);
 }

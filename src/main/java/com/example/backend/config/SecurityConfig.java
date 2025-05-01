@@ -40,7 +40,6 @@ public class SecurityConfig {
 //                        .requestMatchers("/equipment/delete/**").hasAuthority("MANAGE_EQUIPMENT")
                                 .requestMatchers("/equipment/delete/**").permitAll()
 //                                .requestMatchers("/location/add").hasAuthority("MANAGE_EQUIPMENT")
-                                .requestMatchers("/location/**").permitAll()
 //                        .requestMatchers("/location/get", "/location/get/**").hasAuthority("VIEW_EQUIPMENT")
 //                        .requestMatchers("/location/update/**").hasAuthority("MANAGE_EQUIPMENT")
 //                        .requestMatchers("/location/delete/**").hasAuthority("MANAGE_EQUIPMENT")
@@ -57,6 +56,7 @@ public class SecurityConfig {
                                 .requestMatchers("/category/**").permitAll()
                                 .requestMatchers("/location/**").permitAll()
                                 .requestMatchers("/user/**").permitAll()
+                                .requestMatchers("/item/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
