@@ -1,5 +1,6 @@
 package com.example.backend.repository;
 
+import com.example.backend.entity.Equipment;
 import com.example.backend.entity.EquipmentItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,4 +15,8 @@ public interface EquipmentItemRepository extends JpaRepository<EquipmentItem, In
     @Query("select count(e) from EquipmentItem e")
     long getTotalEquipmentItem();
     List<EquipmentItem> findAllEquipmentItemByEquipmentId(int equipmentId);
+    @Query("select e from EquipmentItem e where e.equipment.id = :equipmentId and e.location.id = :locationId order by e.id")
+    List<EquipmentItem> findEquipmentItemByEquipmentIdAndLocationId(int equipmentId, int locationId);
+    @Query("select e from EquipmentItem e where e.location.id = :locationId order by e.id")
+    List<EquipmentItem> findEquipmentItemByLocationId(int locationId);
 }

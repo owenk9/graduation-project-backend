@@ -25,24 +25,28 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-public class EquipmentServiceImpl implements EquipmentService{
+public class EquipmentServiceImpl implements EquipmentService {
     EquipmentMapper equipmentMapper;
     EquipmentRepository equipmentRepository;
     CategoryRepository categoryRepository;
     LocationRepository locationRepository;
     FileStorageService fileStorageService;
+
     private Category getCategoryById(int categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + categoryId));
     }
+
     private Location getLocationById(int locationId) {
         return locationRepository.findById(locationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Location not found with id: " + locationId));
     }
+
     @Override
     public EquipmentResponse addEquipment(EquipmentRequest equipmentRequest, String imageUrl) {
         boolean equipmentExists = equipmentRepository.existsByName(equipmentRequest.getName());
@@ -86,14 +90,14 @@ public class EquipmentServiceImpl implements EquipmentService{
 
     @Override
     public EquipmentResponse getEquipmentById(int id) {
-        Equipment equipment = equipmentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Equipment not found with id: " + id));
+        Equipment equipment = equipmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Equipment not found with id: " + id));
         return equipmentMapper.toEquipmentResponse(equipment);
     }
 
     @Override
     public Page<EquipmentResponse> getAllEquipment(Pageable pageable) {
         Page<Equipment> getAll = equipmentRepository.findAll(pageable);
-
         return getAll.map(equipmentMapper::toEquipmentResponse);
     }
 
@@ -102,21 +106,9 @@ public class EquipmentServiceImpl implements EquipmentService{
         equipmentRepository.deleteById(id);
     }
 
-//    @Override
-//    public Page<EquipmentResponse> findEquipmentByLocationId(int locationId, Pageable pageable) {
-//        Page<Equipment> equipment = equipmentRepository.findByLocationId(locationId, pageable);
-//        if(equipment.isEmpty()){
-//            throw new ResourceNotFoundException("No equipment found for location id: " + locationId);
-//        }
-//        return equipment.map(equipmentMapper::toEquipmentResponse);
-//    }
-
     @Override
     public Page<EquipmentResponse> findEquipmentByCategoryId(int categoryId, Pageable pageable) {
-        Page<Equipment> equipment = equipmentRepository.findByCategoryId(categoryId, pageable);
-        if(equipment.isEmpty()){
-            throw new ResourceNotFoundException("No equipment found for category id: " + categoryId);
-        }
+        Page<Equipment> equipment = equipmentRepository.findEquipmentByCategoryId(categoryId, pageable);
         return equipment.map(equipmentMapper::toEquipmentResponse);
     }
 
@@ -125,36 +117,21 @@ public class EquipmentServiceImpl implements EquipmentService{
         return equipmentRepository.getTotalEquipment();
     }
 
-//    @Override
-//    public Map<String, Long> countByStatus() {
-//        Map<String, Long> equipmentByStatus = new HashMap<>();
-//        equipmentByStatus.put("Active", equipmentRepository.countByStatus("Active"));
-//        equipmentByStatus.put("Broken", equipmentRepository.countByStatus("Broken"));
-//        equipmentByStatus.put("Maintenance", equipmentRepository.countByStatus("Maintenance"));
-//        return equipmentByStatus;
-//    }
-
     @Override
     public Page<EquipmentResponse> findEquipmentByName(String name, Pageable pageable) {
         Page<Equipment> equipment = equipmentRepository.findByNameContainingIgnoreCase(name, pageable);
         return equipment.map(equipmentMapper::toEquipmentResponse);
     }
 
-//    @Override
-//    public Page<EquipmentResponse> findEquipmentByStatus(String status, Pageable pageable) {
-//        Page<Equipment> equipment = equipmentRepository.findByStatus(status, pageable);
-//        return equipment.map(equipmentMapper::toEquipmentResponse);
-//    }
-//
-//    @Override
-//    public List<String> findAllDistinctStatuses() {
-//        return equipmentRepository.findAllDistinctStatuses();
-//    }
-//
-//    @Override
-//    public Page<EquipmentResponse> filter(Integer locationId, Integer categoryId, String name, String status, Pageable pageable) {
-//        Page<Equipment> equipment = equipmentRepository.filter(locationId, categoryId, name, status, pageable);
-//        return equipment.map(equipmentMapper::toEquipmentResponse);
-//    }
+    @Override
+    public Page<EquipmentResponse> findEquipmentByLocationIdAndCategoryId(int categoryId, int locationId, Pageable pageable) {
+        Page<Equipment> equipment = equipmentRepository.findEquipmentByCategoryIdAndLocationId(categoryId, locationId, pageable);
+        return equipment.map(equipmentMapper::toEquipmentResponse);
+    }
 
+    @Override
+    public Page<EquipmentResponse> findEquipmentByLocationId(int locationId, Pageable pageable) {
+        Page<Equipment> equipment = equipmentRepository.findEquipmentByLocationId(locationId, pageable);
+        return equipment.map(equipmentMapper::toEquipmentResponse);
+    }
 }

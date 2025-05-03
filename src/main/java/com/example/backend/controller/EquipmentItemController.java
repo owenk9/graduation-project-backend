@@ -2,7 +2,6 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.EquipmentItemRequest;
 import com.example.backend.dto.response.EquipmentItemResponse;
-import com.example.backend.entity.EquipmentItem;
 import com.example.backend.service.EquipmentItemService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -16,10 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/item")
+@CrossOrigin(origins = "*") // Added to ensure no CORS issues
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class EquipmentItemController {
     EquipmentItemService equipmentItemService;
+
     @PostMapping("/add")
     public ResponseEntity<EquipmentItemResponse> addEquipmentItem(@Valid @RequestBody EquipmentItemRequest equipmentItemRequest) {
         EquipmentItemResponse equipmentItemResponse = equipmentItemService.addEquipmentItem(equipmentItemRequest);
@@ -34,17 +35,33 @@ public class EquipmentItemController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteEquipmentItem(@PathVariable int id) {
-       equipmentItemService.deleteEquipmentItem(id);
-       return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Deleted equipmentItem");
+        equipmentItemService.deleteEquipmentItem(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Deleted equipmentItem");
     }
+
     @GetMapping("/get")
-    public ResponseEntity<List<EquipmentItemResponse>> getEquipmentItems(@RequestParam Integer equipmentId) {
+    public ResponseEntity<List<EquipmentItemResponse>> getEquipmentItems(
+            @RequestParam(required = false) Integer equipmentId,
+            @RequestParam(required = false) Integer locationId) {
+
         List<EquipmentItemResponse> equipmentItemList;
-        if(equipmentId != null){
+
+        if (equipmentId != null && locationId != null) {
+            equipmentItemList = equipmentItemService.getEquipmentItemByEquipmentIdAndLocationId(equipmentId, locationId);
+        } else if (equipmentId != null) {
             equipmentItemList = equipmentItemService.getAllEquipmentItemByEquipmentId(equipmentId);
+        } else if (locationId != null) {
+            equipmentItemList = equipmentItemService.getEquipmentItemByLocationId(locationId);
         } else {
             equipmentItemList = equipmentItemService.getAllEquipmentItems();
         }
-        return  ResponseEntity.status(HttpStatus.OK).body(equipmentItemList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(equipmentItemList);
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<EquipmentItemResponse> getEquipmentItemById(@PathVariable int id) {
+        EquipmentItemResponse response = equipmentItemService.getEquipmentItemById(id);
+        return ResponseEntity.ok(response);
     }
 }

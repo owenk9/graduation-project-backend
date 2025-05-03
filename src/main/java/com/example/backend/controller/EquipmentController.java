@@ -2,7 +2,6 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.EquipmentRequest;
 import com.example.backend.dto.response.EquipmentResponse;
-import com.example.backend.exception.InvalidRequestException;
 import com.example.backend.service.EquipmentService;
 import com.example.backend.service.FileStorageService;
 import jakarta.validation.Valid;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/equipment")
@@ -43,31 +41,34 @@ public class EquipmentController {
         return ResponseEntity.status(201).body(addEquipment);
     }
 
-//    @GetMapping("/get")
-//    public ResponseEntity<Page<EquipmentResponse>> getEquipment(@RequestParam(required = false) Integer locationId,
-//                                                                @RequestParam(required = false) Integer categoryId,
-//                                                                @RequestParam(required = false) String name,
-//                                                                @RequestParam(required = false) String status,
-//                                                                @RequestParam(defaultValue = "0") int page,
-//                                                                @RequestParam(defaultValue = "10") int size){
-//        Sort sort = Sort.by(Sort.Direction.ASC, "id");
-//        Pageable pageable = PageRequest.of(page, size, sort);
-//        Page<EquipmentResponse> equipmentPage = equipmentService.filter(locationId, categoryId, name, status, pageable);
-//        return ResponseEntity.ok(equipmentPage);
-//    }
-
-//    @GetMapping("/get-statuses")
-//    public ResponseEntity<List<String>> getAllStatuses() {
-//        List<String> statuses = equipmentService.findAllDistinctStatuses();
-//        return ResponseEntity.ok(statuses);
-//    }
     @GetMapping("/get")
-    public ResponseEntity<Page<EquipmentResponse>> getAllEquipment(Pageable pageable) {
-        Page<EquipmentResponse> equipmentResponse = equipmentService.getAllEquipment(pageable);
-        return ResponseEntity.status(200).body(equipmentResponse);
+    public ResponseEntity<Page<EquipmentResponse>> getEquipment(
+            @RequestParam(required = false) Integer locationId,
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EquipmentResponse> equipmentPage;
+
+        if (name != null && !name.isEmpty()) {
+            equipmentPage = equipmentService.findEquipmentByName(name, pageable);
+        } else if (locationId != null && categoryId != null) {
+            equipmentPage = equipmentService.findEquipmentByLocationIdAndCategoryId(categoryId, locationId, pageable);
+        } else if (locationId != null) {
+            equipmentPage = equipmentService.findEquipmentByLocationId(locationId, pageable);
+        } else if (categoryId != null) {
+            equipmentPage = equipmentService.findEquipmentByCategoryId(categoryId, pageable);
+        } else {
+            equipmentPage = equipmentService.getAllEquipment(pageable);
+        }
+
+        return ResponseEntity.ok(equipmentPage);
     }
+
     @GetMapping("/get/{id}")
-    public ResponseEntity<EquipmentResponse> getEquipmentById(@PathVariable int id){
+    public ResponseEntity<EquipmentResponse> getEquipmentById(@PathVariable int id) {
         EquipmentResponse getEquipment = equipmentService.getEquipmentById(id);
         return ResponseEntity.ok(getEquipment);
     }
@@ -88,11 +89,8 @@ public class EquipmentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteEquipment(@PathVariable int id){
+    public ResponseEntity<String> deleteEquipment(@PathVariable int id) {
         equipmentService.deleteEquipmentById(id);
         return ResponseEntity.noContent().build();
     }
-
-
-
 }

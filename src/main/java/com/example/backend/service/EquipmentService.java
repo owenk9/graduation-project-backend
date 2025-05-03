@@ -22,4 +22,7 @@ public interface EquipmentService {
 //    Page<EquipmentResponse> findEquipmentByStatus(String status, Pageable pageable);
 //    List<String> findAllDistinctStatuses();
 //    Page<EquipmentResponse> filter(Integer locationId, Integer categoryId, String name, String status, Pageable pageable);
+    Page<EquipmentResponse> findEquipmentByLocationIdAndCategoryId(int categoryId,int locationId, Pageable pageable);
+    Page<EquipmentResponse> findEquipmentByLocationId(int locationId, Pageable pageable);
+
 }
