@@ -14,7 +14,7 @@ public class Maintenance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipmentItem_id", nullable = false)
+    @JoinColumn(name = "equipment_item_id", nullable = false)
     private EquipmentItem equipmentItem;
     @Column(nullable = false)
     private LocalDateTime maintenanceDate;

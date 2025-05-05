@@ -10,6 +10,6 @@ import org.mapstruct.Mapping;
 public interface EquipmentItemMapper {
     EquipmentItem toEquipmentItem(EquipmentItemRequest equipmentItemRequest);
     @Mapping(source = "location.locationName", target = "locationName")
-    @Mapping(source = "equipment.id", target = "equipmentId")
+    @Mapping(source = "equipment.name", target = "equipmentName")
     EquipmentItemResponse toEquipmentItemResponse(EquipmentItem equipmentItem);
 }

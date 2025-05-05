@@ -69,4 +69,12 @@ public class MaintenanceController {
 //        }
 //
 //        return ResponseEntity.ok(maintenancePage);    }
+    @GetMapping("/get")
+    public ResponseEntity<Page<MaintenanceResponse>> getMaintenance(@RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "10") int size){
+       Sort sort = Sort.by(Sort.Direction.ASC, "id");
+       Pageable pageable = PageRequest.of(page, size, sort);
+       Page<MaintenanceResponse> maintenanceResponses = maintenanceService.getAllMaintenances(pageable);
+       return ResponseEntity.ok(maintenanceResponses);
+    }
 }

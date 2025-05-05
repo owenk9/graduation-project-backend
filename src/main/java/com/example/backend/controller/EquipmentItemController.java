@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class EquipmentItemController {
     public ResponseEntity<List<EquipmentItemResponse>> getEquipmentItems(
             @RequestParam(required = false) Integer equipmentId,
             @RequestParam(required = false) Integer locationId) {
-
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
         List<EquipmentItemResponse> equipmentItemList;
 
         if (equipmentId != null && locationId != null) {

@@ -14,6 +14,5 @@ public class EquipmentResponse {
     String name;
     String imageUrl;
     String categoryName;
-    LocalDateTime purchaseDate;
     String description;
 }

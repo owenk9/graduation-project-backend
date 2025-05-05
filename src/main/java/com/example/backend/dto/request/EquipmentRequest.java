@@ -14,6 +14,5 @@ import java.time.LocalDateTime;
 public class EquipmentRequest {
     String name;
     Integer categoryId;
-    LocalDateTime purchaseDate;
     String description;
 }

@@ -48,7 +48,6 @@ public class EquipmentController {
             @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-
         Pageable pageable = PageRequest.of(page, size);
         Page<EquipmentResponse> equipmentPage;
 

@@ -24,6 +24,7 @@ public class EquipmentItem {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EquipmentItemStatus status;
+    LocalDate purchaseDate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Location location;
@@ -31,7 +32,6 @@ public class EquipmentItem {
     private List<Borrowing> borrowing;
     @OneToMany(mappedBy = "equipmentItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Maintenance> maintenance;
-    LocalDateTime returnDate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipment_id", nullable = false)
     private Equipment equipment;

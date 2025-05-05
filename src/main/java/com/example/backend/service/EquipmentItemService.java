@@ -4,6 +4,7 @@ import com.example.backend.dto.request.EquipmentItemRequest;
 import com.example.backend.dto.response.EquipmentItemResponse;
 import com.example.backend.dto.response.EquipmentResponse;
 import com.example.backend.entity.Equipment;
+import com.example.backend.entity.EquipmentItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

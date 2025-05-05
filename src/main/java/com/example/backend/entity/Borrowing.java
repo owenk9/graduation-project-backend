@@ -15,7 +15,7 @@ public class Borrowing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "equipmentItem_id", nullable = false)
+    @JoinColumn(name = "equipment_item_id", nullable = false)
     private EquipmentItem equipmentItem;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", nullable = false)

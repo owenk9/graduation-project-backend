@@ -21,7 +21,6 @@ public class Equipment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-    LocalDateTime purchaseDate;
     String description;
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EquipmentItem> equipmentItem;

@@ -7,6 +7,7 @@ import com.example.backend.dto.response.EquipmentResponse;
 import com.example.backend.entity.Equipment;
 import com.example.backend.entity.EquipmentItem;
 import com.example.backend.entity.Location;
+import com.example.backend.enums.EquipmentItemStatus;
 import com.example.backend.exception.DuplicateResourceException;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.EquipmentItemMapper;
@@ -63,8 +64,9 @@ public class EquipmentItemServiceImpl implements EquipmentItemService {
             throw new DuplicateResourceException("Serial number already exists: " + equipmentItem.getSerialNumber());
         }
         equipmentItem.setSerialNumber(equipmentItemRequest.getSerialNumber());
+        equipmentItem.setStatus(EquipmentItemStatus.valueOf(equipmentItemRequest.getStatus()));
+        equipmentItem.setPurchaseDate(equipmentItemRequest.getPurchaseDate());
         equipmentItem.setLocation(getLocationById(equipmentItemRequest.getLocationId()));
-        equipmentItem.setReturnDate(equipmentItemRequest.getReturnDate());
         EquipmentItem equipmentItemSaved = equipmentItemRepository.save(equipmentItem);
         return equipmentItemMapper.toEquipmentItemResponse(equipmentItemSaved);
     }
