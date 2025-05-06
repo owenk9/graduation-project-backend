@@ -6,6 +6,7 @@ import com.example.backend.entity.Equipment;
 import com.example.backend.entity.EquipmentItem;
 import com.example.backend.entity.Maintenance;
 import com.example.backend.enums.MaintenanceStatus;
+import com.example.backend.exception.DuplicateResourceException;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.MaintenanceMapper;
 import com.example.backend.repository.EquipmentItemRepository;
@@ -35,6 +36,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
     @Override
     public MaintenanceResponse addMaintenance(MaintenanceRequest maintenancerequest) {
+        if(equipmentItemRepository.existsBySerialNumber(maintenancerequest.getSerialNumber())){
+            throw new DuplicateResourceException("Serial number already exists: " + maintenancerequest.getSerialNumber());
+        }
         Maintenance maintenance = maintenanceMapper.toMaintenance(maintenancerequest);
         maintenance.setEquipmentItem(findEquipmentItemById(maintenancerequest.getEquipmentItemId()));
         Maintenance savedMaintenance = maintenanceRepository.save(maintenance);
@@ -44,7 +48,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Override
     public MaintenanceResponse updateMaintenance(int id, MaintenanceRequest maintenancerequest) {
         Maintenance existingMaintenance = maintenanceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Maintenance not found with id: " + id));
-
         existingMaintenance.setEquipmentItem(findEquipmentItemById(maintenancerequest.getEquipmentItemId()));
         existingMaintenance.setMaintenanceDate(maintenancerequest.getMaintenanceDate());
         existingMaintenance.setDescription(maintenancerequest.getDescription());

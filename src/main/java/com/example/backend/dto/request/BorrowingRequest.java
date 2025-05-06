@@ -11,10 +11,9 @@ import java.time.LocalDateTime;
 @Setter
 public class BorrowingRequest {
     int equipmentItemId;
-    String serialNumber;
     int usersId;
+    String note;
     LocalDateTime borrowDate;
     LocalDateTime returnDate;
-    String status;
 
 }

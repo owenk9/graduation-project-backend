@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface BorrowingMapper {
     Borrowing toBorrowing(BorrowingRequest borrowingRequest);
-    @Mapping(source = "users.id", target = "usersId")
-    @Mapping(source = "equipmentItem.id", target = "equipmentItemId")
+    @Mapping(source = "users.lastName", target = "usersLastName")
+    @Mapping(source = "users.firstName", target = "usersFirstName")
+    @Mapping(source = "equipmentItem.equipment.name", target = "equipmentName")
+    @Mapping(source = "equipmentItem.serialNumber", target = "serialNumber")
     BorrowingResponse toBorrowingResponse(Borrowing borrowing);
 }

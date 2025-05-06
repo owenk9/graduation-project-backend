@@ -1,5 +1,5 @@
 package com.example.backend.enums;
 
 public enum BorrowingStatus {
-    PENDING, BORROWED, RETURNED, OVERDUE
+    PENDING, APPROVED, REJECTED, BORROWED, RETURNED, OVERDUE
 }

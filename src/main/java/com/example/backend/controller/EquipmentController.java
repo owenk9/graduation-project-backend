@@ -48,7 +48,8 @@ public class EquipmentController {
             @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
         Page<EquipmentResponse> equipmentPage;
 
         if (name != null && !name.isEmpty()) {

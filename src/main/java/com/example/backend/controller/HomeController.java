@@ -27,8 +27,8 @@ public class HomeController {
 //    public ResponseEntity<Map<String, Long>> countByStatus () {
 //        return ResponseEntity.ok(equipmentService.countByStatus());
 //    }
-    @GetMapping("/total-borrowing")
-    public ResponseEntity<Long> getTotalBorrowings() {
-        return ResponseEntity.ok(borrowingService.getTotalBorrowings());
-    }
+//    @GetMapping("/total-borrowing")
+//    public ResponseEntity<Long> getTotalBorrowings() {
+//        return ResponseEntity.ok(borrowingService.getTotalBorrowings());
+//    }
 }

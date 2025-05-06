@@ -24,6 +24,8 @@ public class Borrowing {
     private LocalDateTime borrowDate;
     @Column(nullable = false)
     private LocalDateTime returnDate;
+    private String note;
+    private String adminNote;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BorrowingStatus status;

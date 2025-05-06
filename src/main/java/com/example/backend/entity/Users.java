@@ -24,4 +24,6 @@ public class Users {
     private List<Borrowing> borrowing;
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserRole> userRoles;
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Notification> notifications;
 }

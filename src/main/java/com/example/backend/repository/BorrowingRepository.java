@@ -11,4 +11,8 @@ public interface BorrowingRepository extends JpaRepository<Borrowing, Integer> {
     Page<Borrowing> findBorrowingByEquipmentItemId(int equipmentItemId, Pageable pageable);
     @Query("select count(b) from Borrowing b")
     long getTotalBorrowings();
+    @Query(value = "SELECT b FROM Borrowing b JOIN FETCH b.equipmentItem ei JOIN FETCH ei.equipment e JOIN FETCH b.users u WHERE b.status = 'PENDING'",
+            countQuery = "SELECT COUNT(b) FROM Borrowing b WHERE b.status = 'PENDING'")
+    Page<Borrowing> findPendingWithAssociations(Pageable pageable);
+
 }
