@@ -46,70 +46,13 @@ public class BorrowingServiceImpl implements BorrowingService {
         return equipmentItemRepository.findById(equipmentItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Equipment item not found with id: " + equipmentItemId));
     }
-//    private String getStatusByEquipmentItemId(int equipmentItemId) {
-//
-//    }
-//    @Override
-//    public BorrowingResponse addBorrowing(BorrowingRequest borrowingRequest) {
-//        Borrowing borrowing = borrowingMapper.toBorrowing(borrowingRequest);
-//        borrowing.setEquipmentItem(getEquipmentItemById(borrowingRequest.getEquipmentItemId()));
-//        borrowing.setUsers(getUserById(borrowingRequest.getUsersId()));
-//        Borrowing savedBorrowing = borrowingRepository.save(borrowing);
-//        return borrowingMapper.toBorrowingResponse(savedBorrowing);
-//    }
-//
-//    @Override
-//    public BorrowingResponse updateBorrowing(int id, BorrowingRequest borrowingRequest) {
-//        Borrowing existingBorrowing = borrowingRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Borrowing not found with id: " + id));
-//        existingBorrowing.setBorrowDate(borrowingRequest.getBorrowDate());
-//        existingBorrowing.setReturnDate(borrowingRequest.getReturnDate());
-//        existingBorrowing.setEquipmentItem(getEquipmentItemById(borrowingRequest.getEquipmentItemId()));
-//        existingBorrowing.setUsers(getUserById(borrowingRequest.getUsersId()));
-//        existingBorrowing.setStatus(BorrowingStatus.valueOf(borrowingRequest.getStatus()));
-//        Borrowing savedBorrowing = borrowingRepository.save(existingBorrowing);
-//        return borrowingMapper.toBorrowingResponse(savedBorrowing);
-//    }
-//
-//    @Override
-//    public void deleteBorrowing(int id) {
-//        equipmentRepository.deleteById(id);
-//    }
-//
-//    @Override
-//    public BorrowingResponse getBorrowingById(int id) {
-//        Borrowing borrowing = borrowingRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Borrowing not found with id: " + id));
-//        return borrowingMapper.toBorrowingResponse(borrowing);
-//    }
-//
+
     @Override
     public Page<BorrowingResponse> getAllBorrowings(Pageable pageable) {
         Page<Borrowing> borrowings = borrowingRepository.findAll(pageable);
         return borrowings.map(borrowingMapper::toBorrowingResponse);
     }
-//
-//    @Override
-//    public Page<BorrowingResponse> findBorrowingByUsersId(int usersId, Pageable pageable) {
-//        Page<Borrowing> borrowing = borrowingRepository.findBorrowingByUsersId(usersId, pageable);
-//        if(borrowing.isEmpty()){
-//            throw new ResourceNotFoundException("No borrowing found for user id: " + usersId);
-//        }
-//        return borrowing.map(borrowingMapper::toBorrowingResponse);
-//    }
-//
-//    @Override
-//    public Page<BorrowingResponse> findBorrowingByEquipmentItemId(int equipmentItemId, Pageable pageable) {
-//        Page<Borrowing> borrowing = borrowingRepository.findBorrowingByEquipmentItemId(equipmentItemId, pageable);
-//        if(borrowing.isEmpty()){
-//            throw new ResourceNotFoundException("No borrowing found for equipment id: " + equipmentItemId);
-//        }
-//        return borrowing.map(borrowingMapper::toBorrowingResponse);
-//    }
-//
-//    @Override
-//    public long getTotalBorrowings() {
-//        return borrowingRepository.getTotalBorrowings();
-//    }
+
 
     @Override
     public BorrowingResponse createBorrowing(BorrowingRequest borrowingRequest) {

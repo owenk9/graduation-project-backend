@@ -1,5 +1,7 @@
 package com.example.backend.entity;
 
+import com.example.backend.enums.BorrowingStatus;
+import com.example.backend.enums.RoleName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,10 +18,12 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-    String roleName;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleName roleName;
     String description;
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<UserRole> userRoles;
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<RolePermission> rolePermission;
 }

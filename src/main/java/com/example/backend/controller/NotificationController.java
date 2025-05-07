@@ -24,9 +24,26 @@ public class NotificationController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/unread/user/{userId}")
     public ResponseEntity<List<NotificationResponse>> getUnreadNotifications(@PathVariable int userId) {
         List<NotificationResponse> responses = notificationService.getUnreadNotifications(userId);
         return ResponseEntity.ok(responses);
     }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<NotificationResponse>> getNotifications(@PathVariable int userId) {
+       List<NotificationResponse>  response = notificationService.findByUserId(userId);
+       return ResponseEntity.ok(response);
+    }
+    @PutMapping("/read/{id}")
+    public ResponseEntity<Void> markAsRead(@PathVariable int id) {
+        notificationService.markAsRead(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteNotification(@PathVariable int id) {
+        notificationService.deleteNotification(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

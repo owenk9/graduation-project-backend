@@ -17,5 +17,5 @@ public class Notification {
     private Users users;
     @Column(nullable = false)
     private String message;
-    private boolean isRead = false;
+    private boolean isRead;
 }
