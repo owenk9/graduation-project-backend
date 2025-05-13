@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<Notification, Integer> {
-    @Query("select n from Notification n join fetch n.users where n.isRead = false and n.users.id = :usersId")
+    @Query("select n from Notification n join fetch n.users where n.isRead = false and n.users.id = :usersId order by n.id desc ")
     List<Notification> findByUserIdAndIsReadFalse(int usersId);
     @Transactional
     @Modifying

@@ -23,5 +23,5 @@ public interface BorrowingService {
     BorrowingResponse createBorrowing(BorrowingRequest borrowingRequest);
     Page<BorrowingResponse> getPendingBorrowingList(Pageable pageable);
     BorrowingResponse confirmBorrowing(int id, BorrowingStatus borrowingStatus, String adminNote);
-
+    Page<BorrowingResponse> findByEquipmentNameContainingIgnoreCase(String equipmentName, Pageable pageable);
 }

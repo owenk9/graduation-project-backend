@@ -25,15 +25,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         Users users = usersRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email " + email));
         System.out.println("Found user: " + users.getEmail());
-        Hibernate.initialize(users.getUserRoles()); // Khởi tạo UserRole
+
+
+        Hibernate.initialize(users.getUserRoles());
         if (users.getUserRoles() != null) {
             users.getUserRoles().forEach(userRole -> {
-                Hibernate.initialize(userRole.getRole()); // Khởi tạo Role
-                if (userRole.getRole() != null) {
-                    Hibernate.initialize(userRole.getRole().getRolePermission()); // Khởi tạo RolePermission
-                }
+                Hibernate.initialize(userRole.getRole());
+
             });
         }
+
         return new CustomUserDetails(users);
     }
 }

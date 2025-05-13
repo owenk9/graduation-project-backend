@@ -27,11 +27,16 @@ public class BorrowingController {
         return ResponseEntity.ok(borrowingResponse);
     }
     @GetMapping("/get")
-    public ResponseEntity<Page<BorrowingResponse>> getBorrowing(
+    public ResponseEntity<Page<BorrowingResponse>> getBorrowing(@RequestParam(required = false) String equipmentName,
                                                                 @RequestParam(defaultValue = "0") int page,
                                                                 @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<BorrowingResponse> borrowingPage = borrowingService.getAllBorrowings(pageable);
+        Page<BorrowingResponse> borrowingPage;
+        if(equipmentName != null) {
+           borrowingPage = borrowingService.findByEquipmentNameContainingIgnoreCase(equipmentName, pageable);
+        } else {
+           borrowingPage = borrowingService.getAllBorrowings(pageable);
+        }
         return ResponseEntity.ok(borrowingPage);
 
     }

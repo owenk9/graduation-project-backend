@@ -1,7 +1,9 @@
 package com.example.backend.service.Impl;
 
 import com.example.backend.dto.request.BorrowingRequest;
+import com.example.backend.dto.response.BorrowingConfirmationResponse;
 import com.example.backend.dto.response.BorrowingResponse;
+import com.example.backend.dto.response.NotificationResponse;
 import com.example.backend.entity.Borrowing;
 import com.example.backend.entity.Equipment;
 import com.example.backend.entity.EquipmentItem;
@@ -98,14 +100,19 @@ public class BorrowingServiceImpl implements BorrowingService {
         Borrowing updatedBorrowing = borrowingRepository.save(borrowing);
         String message;
         if (borrowingStatus == BorrowingStatus.APPROVED) {
-            message = "Borrow request " + borrowing.getEquipmentItem().getEquipment().getName() + " của bạn đã được duyệt.";
+            message = "Borrow request " + borrowing.getEquipmentItem().getEquipment().getName() + " has been approved.";
         } else {
-            message = "Borrow request " + borrowing.getEquipmentItem().getEquipment().getName() + " của bạn đã bị từ chối. Lý do: " + (adminNote != null ? adminNote : "Không có lý do cụ thể.");
+            message = "Borrow request " + borrowing.getEquipmentItem().getEquipment().getName() + " has been rejected. Reason: " + (adminNote != null ? adminNote : "No reason provided.");
         }
         notificationService.sendNotification(borrowing.getUsers().getId(), message);
         return borrowingMapper.toBorrowingResponse(updatedBorrowing);
     }
 
+    @Override
+    public Page<BorrowingResponse> findByEquipmentNameContainingIgnoreCase(String equipmentName, Pageable pageable) {
+        Page<Borrowing> borrowings = borrowingRepository.findByEquipmentNameContainingIgnoreCase(equipmentName, pageable);
+        return borrowings.map(borrowingMapper::toBorrowingResponse);
+    }
 
 
 }

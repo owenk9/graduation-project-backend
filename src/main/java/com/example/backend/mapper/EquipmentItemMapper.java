@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface EquipmentItemMapper {
     EquipmentItem toEquipmentItem(EquipmentItemRequest equipmentItemRequest);
+    @Mapping(source = "equipment.id", target = "equipmentId")
     @Mapping(source = "location.locationName", target = "locationName")
     @Mapping(source = "equipment.name", target = "equipmentName")
     EquipmentItemResponse toEquipmentItemResponse(EquipmentItem equipmentItem);

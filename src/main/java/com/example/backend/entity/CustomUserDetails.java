@@ -1,3 +1,4 @@
+// src/main/java/com/example/backend/entity/CustomUserDetails.java
 package com.example.backend.entity;
 
 import com.example.backend.enums.RoleName;
@@ -33,29 +34,14 @@ public class CustomUserDetails implements UserDetails {
         for (UserRole userRole : new ArrayList<>(userRoles)) {
             Role role = userRole.getRole();
             Hibernate.initialize(role);
-            Hibernate.initialize(role.getRolePermission());
             if (role == null) {
                 throw new RuntimeException("Role is null in UserRole for user: " + user.getEmail());
             }
 
             String roleName = role.getRoleName().name();
             authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
-
-            Set<RolePermission> rolePermissions = role.getRolePermission();
-            if (rolePermissions == null || !Hibernate.isInitialized(rolePermissions)) {
-                throw new RuntimeException("Role permissions are null or not initialized for role: " + roleName);
-            }
-
-            for (RolePermission rolePermission : new ArrayList<>(rolePermissions)) {
-                if (rolePermission.getPermission() == null) {
-                    throw new RuntimeException("Permission is null in RolePermission for role: " + roleName);
-                }
-
-                String permissionName = rolePermission.getPermission().getPermissionName();
-                authorities.add(new SimpleGrantedAuthority(permissionName));
-            }
         }
-
+        System.out.println("Authorities for user------------------------------------ " + user.getEmail() + ": " + authorities);
         return authorities;
     }
 
@@ -63,7 +49,7 @@ public class CustomUserDetails implements UserDetails {
         return (user.getFirstName() + " " + user.getLastName()).trim();
     }
 
-    public int getId(){
+    public int getId() {
         return user.getId();
     }
 
@@ -74,9 +60,11 @@ public class CustomUserDetails implements UserDetails {
         }
         return RoleName.USER;
     }
+
     public String getDepartment() {
         return user.getDepartment();
     }
+
     @Override
     public String getPassword() {
         return user.getPassword();

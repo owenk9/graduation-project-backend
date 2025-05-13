@@ -14,9 +14,11 @@ public interface EquipmentItemRepository extends JpaRepository<EquipmentItem, In
     boolean existsBySerialNumber(String serialNumber);
     @Query("select count(e) from EquipmentItem e")
     long getTotalEquipmentItem();
+    @Query("SELECT e FROM EquipmentItem e WHERE e.equipment.id = :equipmentId ORDER BY e.id")
     List<EquipmentItem> findAllEquipmentItemByEquipmentId(int equipmentId);
     @Query("select e from EquipmentItem e where e.equipment.id = :equipmentId and e.location.id = :locationId order by e.id")
     List<EquipmentItem> findEquipmentItemByEquipmentIdAndLocationId(int equipmentId, int locationId);
     @Query("select e from EquipmentItem e where e.location.id = :locationId order by e.id")
     List<EquipmentItem> findEquipmentItemByLocationId(int locationId);
+
 }

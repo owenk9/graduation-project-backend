@@ -1,5 +1,6 @@
 package com.example.backend.config;
 
+import com.example.backend.service.BlacklistService;
 import com.example.backend.service.CustomUserDetailsService;
 import com.example.backend.util.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -22,11 +23,15 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
+    private final BlacklistService blacklistService;
+
     @Autowired
-    public JwtFilter(JwtUtil jwtUtil, CustomUserDetailsService customUserDetailsService) {
+    public JwtFilter(JwtUtil jwtUtil, CustomUserDetailsService customUserDetailsService, BlacklistService blacklistService) {
         this.jwtUtil = jwtUtil;
         this.customUserDetailsService = customUserDetailsService;
+        this.blacklistService = blacklistService;
     }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
@@ -36,9 +41,17 @@ public class JwtFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             try {
+                // Kiểm tra blacklist
+                if (blacklistService.isBlacklisted(token)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Token is blacklisted");
+                    return;
+                }
+
                 username = jwtUtil.extractUsername(token);
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid token: " + e.getMessage());
                 return;
             }
         }

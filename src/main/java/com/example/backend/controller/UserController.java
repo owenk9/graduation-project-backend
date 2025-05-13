@@ -1,7 +1,10 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.request.ChangePasswordRequest;
+import com.example.backend.dto.request.UserManagementRequest;
 import com.example.backend.dto.response.AuthResponse;
+import com.example.backend.dto.response.EquipmentResponse;
+import com.example.backend.dto.response.UserManagementResponse;
 import com.example.backend.dto.response.UserResponse;
 import com.example.backend.entity.CustomUserDetails;
 import com.example.backend.service.UsersService;
@@ -9,9 +12,14 @@ import com.example.backend.util.JwtUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -45,14 +53,38 @@ public class UserController {
     public ResponseEntity<AuthResponse> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         try {
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String newToken = usersService.changePassword(userDetails.getId(), changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
-            System.out.println("Role: " + userDetails.getRole().name());
-            if (newToken == null) {
+            Map<String, String> tokens = usersService.changePassword(userDetails.getId(), changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
+            if (tokens == null || tokens.get("accessToken") == null) {
                 return ResponseEntity.badRequest().body(new AuthResponse("Change password failed: Incorrect old password"));
             }
-            return ResponseEntity.ok(new AuthResponse(newToken));
+            return ResponseEntity.ok(new AuthResponse(tokens.get("accessToken"), tokens.get("refreshToken")));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new AuthResponse("Change password failed: " + e.getMessage()));
         }
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<UserManagementResponse> addUser(@RequestBody UserManagementRequest userManagementRequest) {
+        UserManagementResponse userManagementResponse = usersService.addUser(userManagementRequest);
+        return ResponseEntity.ok(userManagementResponse);
+    }
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<UserManagementResponse> updateUser(@PathVariable int id, @RequestBody UserManagementRequest userManagementRequest) {
+        UserManagementResponse userManagementResponse = usersService.updateUser(id, userManagementRequest);
+        return ResponseEntity.ok(userManagementResponse);
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+        usersService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/get")
+    public ResponseEntity<Page<UserManagementResponse>> getUsers(
+                                                           @RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserManagementResponse> userPage;
+        userPage = usersService.getAllUsers(pageable);
+        return ResponseEntity.ok(userPage);
     }
 }

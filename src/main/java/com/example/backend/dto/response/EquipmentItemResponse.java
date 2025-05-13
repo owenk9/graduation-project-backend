@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 public class EquipmentItemResponse {
     int id;
+    int equipmentId;
     String equipmentName;
     String serialNumber;
     String status;
