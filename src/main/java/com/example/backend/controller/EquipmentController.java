@@ -93,4 +93,9 @@ public class EquipmentController {
         equipmentService.deleteEquipmentById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/get_total")
+    public ResponseEntity<Long> getEquipmentTotal(){
+        return ResponseEntity.ok(equipmentService.getTotalEquipment());
+    }
 }

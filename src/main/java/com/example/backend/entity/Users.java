@@ -21,9 +21,7 @@ public class Users {
     String password;
     String department;
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Borrowing> borrowing;
+    private List<Broken> broken;
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserRole> userRoles;
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Notification> notifications;
 }

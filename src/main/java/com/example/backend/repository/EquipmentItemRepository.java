@@ -1,5 +1,6 @@
 package com.example.backend.repository;
 
+import com.example.backend.dto.response.StatusDistribution;
 import com.example.backend.entity.Equipment;
 import com.example.backend.entity.EquipmentItem;
 import org.springframework.data.domain.Page;
@@ -20,5 +21,8 @@ public interface EquipmentItemRepository extends JpaRepository<EquipmentItem, In
     List<EquipmentItem> findEquipmentItemByEquipmentIdAndLocationId(int equipmentId, int locationId);
     @Query("select e from EquipmentItem e where e.location.id = :locationId order by e.id")
     List<EquipmentItem> findEquipmentItemByLocationId(int locationId);
+    @Query("SELECT ei.status, COUNT(ei) " +
+            "FROM EquipmentItem ei GROUP BY ei.status")
+    List<Object[]> countByStatusRaw();
 
 }

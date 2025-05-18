@@ -29,7 +29,7 @@ public class EquipmentItem {
     @JoinColumn(name = "location_id")
     private Location location;
     @OneToMany(mappedBy = "equipmentItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Borrowing> borrowing;
+    private List<Broken> broken;
     @OneToMany(mappedBy = "equipmentItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Maintenance> maintenance;
     @ManyToOne(fetch = FetchType.LAZY)

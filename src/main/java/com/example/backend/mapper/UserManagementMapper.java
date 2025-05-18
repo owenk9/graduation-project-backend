@@ -18,7 +18,6 @@ public interface UserManagementMapper {
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "email", target = "email")
-    @Mapping(source = "password", target = "password")
     @Mapping(source = "department", target = "department")
     @Mapping(source = "userRoles", target = "role", qualifiedByName = "mapUserRolesToRole")
 

@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.request.EquipmentItemRequest;
 import com.example.backend.dto.response.EquipmentItemResponse;
 import com.example.backend.dto.response.EquipmentResponse;
+import com.example.backend.dto.response.StatusDistribution;
 import com.example.backend.entity.Equipment;
 import com.example.backend.entity.EquipmentItem;
 import org.springframework.data.domain.Page;
@@ -20,4 +21,5 @@ public interface EquipmentItemService {
     List<EquipmentItemResponse> getAllEquipmentItemByEquipmentId(int equipmentId);
     List<EquipmentItemResponse> getEquipmentItemByEquipmentIdAndLocationId(int equipmentId, int locationId);
     List<EquipmentItemResponse> getEquipmentItemByLocationId(int locationId);
+    List<StatusDistribution> getStatusDistribution();
 }

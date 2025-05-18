@@ -2,8 +2,6 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.CategoryRequest;
 import com.example.backend.dto.response.CategoryResponse;
-import com.example.backend.dto.response.EquipmentResponse;
-import com.example.backend.entity.Category;
 import com.example.backend.service.CategoryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

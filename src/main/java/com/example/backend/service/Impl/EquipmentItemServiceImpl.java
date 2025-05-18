@@ -4,6 +4,7 @@ package com.example.backend.service.Impl;
 import com.example.backend.dto.request.EquipmentItemRequest;
 import com.example.backend.dto.response.EquipmentItemResponse;
 import com.example.backend.dto.response.EquipmentResponse;
+import com.example.backend.dto.response.StatusDistribution;
 import com.example.backend.entity.Equipment;
 import com.example.backend.entity.EquipmentItem;
 import com.example.backend.entity.Location;
@@ -110,5 +111,16 @@ public class EquipmentItemServiceImpl implements EquipmentItemService {
     public List<EquipmentItemResponse> getEquipmentItemByLocationId(int locationId) {
         List<EquipmentItem> equipmentItemList = equipmentItemRepository.findEquipmentItemByLocationId(locationId);
         return equipmentItemList.stream().map(equipmentItemMapper::toEquipmentItemResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StatusDistribution> getStatusDistribution() {
+        List<Object[]> rawResults = equipmentItemRepository.countByStatusRaw();
+        return rawResults.stream()
+                .map(result -> new StatusDistribution(
+                        result[0] != null ? ((EquipmentItemStatus) result[0]).toString() : null,
+                        (Long) result[1]
+                ))
+                .collect(Collectors.toList());
     }
 }

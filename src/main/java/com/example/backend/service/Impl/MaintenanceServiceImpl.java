@@ -1,6 +1,7 @@
 package com.example.backend.service.Impl;
 
 import com.example.backend.dto.request.MaintenanceRequest;
+import com.example.backend.dto.response.MaintenanceByTime;
 import com.example.backend.dto.response.MaintenanceResponse;
 import com.example.backend.entity.Equipment;
 import com.example.backend.entity.EquipmentItem;
@@ -19,6 +20,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -75,14 +80,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return maintenances.map(maintenanceMapper::toMaintenanceResponse);
     }
 
-//    @Override
-//    public Page<MaintenanceResponse> findMaintenanceByEquipmentId(int equipmentId, Pageable pageable) {
-//        Page<Maintenance> maintenance = maintenanceRepository.findMaintenanceByEquipmentId(equipmentId, pageable);
-//        if(maintenance.isEmpty()){
-//            throw new ResourceNotFoundException("Maintenance not found with id: " + equipmentId);
-//        }
-//        return maintenance.map(maintenanceMapper::toMaintenanceResponse);
-//    }
 
     @Override
     public Page<MaintenanceResponse> findMaintenanceByTechnician(String technician, Pageable pageable) {
@@ -93,22 +90,68 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return maintenance.map(maintenanceMapper::toMaintenanceResponse);
     }
 
-//    @Override
-//    public Page<MaintenanceResponse> findMaintenanceByEquipmentName(String equipmentName, Pageable pageable) {
-//        Page<Maintenance> maintenance = maintenanceRepository.findByEquipmentNameContainingIgnoreCase(equipmentName, pageable);
-//        return maintenance.map(maintenanceMapper::toMaintenanceResponse);
-//    }
-//
-//    @Override
-//    public Page<MaintenanceResponse> findEquipmentNameByEquipmentId(int equipmentId, Pageable pageable) {
-//        Page<Maintenance> maintenances = maintenanceRepository.findEquipmentNameByEquipmentId(equipmentId, pageable);
-//
-//        return null;
-//    }
 
     @Override
     public long getTotalMaintenances() {
         return maintenanceRepository.getTotalMaintenance();
+    }
+
+    @Override
+    public Page<MaintenanceResponse> findByEquipmentItemId(int equipmentItemId, Pageable pageable) {
+        Page<Maintenance> history = maintenanceRepository.findByEquipmentItemId(equipmentItemId, pageable);
+        return history.map(maintenanceMapper::toMaintenanceResponse);
+    }
+
+    public List<MaintenanceByTime> getMaintenanceByTime(LocalDateTime startDate, LocalDateTime endDate, String groupBy) {
+        List<Object[]> rawResults;
+        if ("month".equalsIgnoreCase(groupBy)) {
+            rawResults = maintenanceRepository.countMaintenanceByMonth(startDate, endDate);
+        } else if ("quarter".equalsIgnoreCase(groupBy)) {
+            // Tương tự, dùng FUNCTION('DATE_FORMAT', m.maintenanceDate, '%Y-Q%q')
+            rawResults = maintenanceRepository.countMaintenanceByQuarter(startDate, endDate);
+        } else {
+            rawResults = maintenanceRepository.countMaintenanceByMonth(startDate, endDate);
+        }
+        return rawResults.stream()
+                .map(result -> new MaintenanceByTime(
+                        (String) result[0],
+                        ((Number) result[1]).longValue(),
+                        ((Number) result[2]).doubleValue()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<MaintenanceResponse> getMaintenanceReports(Integer year, String month, String quarter, Pageable pageable) {
+        LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
+
+        if (year != null) {
+            if (month != null && !month.isEmpty()) {
+                startDate = LocalDateTime.of(year, Integer.parseInt(month), 1, 0, 0);
+                endDate = startDate.plusMonths(1).minusSeconds(1);
+            } else if (quarter != null && !quarter.isEmpty()) {
+                int startMonth = (Integer.parseInt(quarter) - 1) * 3 + 1;
+                startDate = LocalDateTime.of(year, startMonth, 1, 0, 0);
+                endDate = startDate.plusMonths(3).minusSeconds(1);
+            } else {
+                startDate = LocalDateTime.of(year, 1, 1, 0, 0);
+                endDate = LocalDateTime.of(year, 12, 31, 23, 59, 59);
+            }
+        }
+
+        if (startDate == null || endDate == null) {
+            return maintenanceRepository.findAll(pageable).map(maintenanceMapper::toMaintenanceResponse);
+        }
+
+        return maintenanceRepository.findByMaintenanceDateBetween(startDate, endDate, pageable)
+                .map(maintenanceMapper::toMaintenanceResponse);
+    }
+
+    @Override
+    public Double getTotalMaintenanceCost() {
+        Double totalCost = maintenanceRepository.sumMaintenanceCost();
+        return totalCost != null ? totalCost : 0.0;
     }
 
 }
