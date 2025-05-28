@@ -19,4 +19,5 @@ public interface UsersService{
     UserManagementResponse updateUser(int id, UserManagementRequest userManagementRequest);
     void deleteUser(int id);
     Page<UserManagementResponse> getAllUsers(Pageable pageable);
+    Page<UserManagementResponse> searchUsersByName(String name, Pageable pageable);
 }

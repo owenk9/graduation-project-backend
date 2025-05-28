@@ -112,4 +112,10 @@ public class BrokenServiceImpl implements BrokenService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Page<BrokenResponse> searchBrokenByEquipmentName(String equipmentName, Pageable pageable) {
+        Page<Broken> brokenPage = brokenRepository.findByEquipmentNameContainingIgnoreCase(equipmentName.trim(), pageable);
+        return brokenPage.map(brokenMapper::toBrokenResponse);
+    }
+
 }

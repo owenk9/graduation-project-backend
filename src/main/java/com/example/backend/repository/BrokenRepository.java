@@ -24,4 +24,6 @@ public interface BrokenRepository extends JpaRepository<Broken, Integer> {
             "GROUP BY TO_CHAR(b.broken_date, 'YYYY-\"Q\"Q') " +
             "ORDER BY time_period", nativeQuery = true)
     List<Object[]> countBrokenByQuarter(LocalDateTime startDate, LocalDateTime endDate);
+    @Query("SELECT b FROM Broken b WHERE LOWER(b.equipmentItem.equipment.name) LIKE LOWER(CONCAT('%', :equipmentName, '%'))")
+    Page<Broken> findByEquipmentNameContainingIgnoreCase(String equipmentName, Pageable pageable);
 }

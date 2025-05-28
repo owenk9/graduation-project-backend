@@ -87,4 +87,15 @@ public class MaintenanceController {
         Page<MaintenanceResponse> history = maintenanceService.findByEquipmentItemId(equipmentItemId, pageable);
         return ResponseEntity.ok(history);
     }
+    @GetMapping("/search")
+    public ResponseEntity<Page<MaintenanceResponse>> searchMaintenanceByEquipmentName(@RequestParam(required = false) String name,
+                                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                                      @RequestParam(defaultValue = "10") int size){
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<MaintenanceResponse> maintenanceResponses = maintenanceService.searchMaintenanceByEquipmentName(name, pageable);
+        return ResponseEntity.ok(maintenanceResponses);
+    }
+
+
 }

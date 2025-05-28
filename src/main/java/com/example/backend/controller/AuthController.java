@@ -15,7 +15,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -56,7 +55,6 @@ public class AuthController {
         }
 
         String username = jwtUtil.extractUsername(refreshToken);
-        // Lấy thông tin người dùng từ service thay vì dùng authentication manager
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
         Map<String, String> tokens = jwtUtil.generateTokens(userDetails);
@@ -72,5 +70,49 @@ public class AuthController {
             return ResponseEntity.ok("Logged out successfully");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token or authorization header");
+    }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) throws Exception {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        if (userDetails == null) {
+            return ResponseEntity.badRequest().body("Email not found");
+        }
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+        String token = jwtUtil.generateResetToken(email, customUserDetails.getId());
+        customUserDetailsService.getEmailService().sendResetPasswordEmail(email, token);
+
+        return ResponseEntity.ok("Reset password link sent to your email");
+    }
+
+    @GetMapping("/validate-reset-token")
+    public ResponseEntity<String> validateResetToken(@RequestParam String token) {
+        if (jwtUtil.validateResetToken(token)) {
+            return ResponseEntity.ok("Token is valid");
+        }
+        return ResponseEntity.badRequest().body("Invalid or expired token");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String newPassword = request.get("newPassword");
+
+        if (!jwtUtil.validateResetToken(token)) {
+            return ResponseEntity.badRequest().body("Invalid or expired token");
+        }
+
+        Integer userId = jwtUtil.extractUserId(token);
+        String email = jwtUtil.extractUsername(token);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        if (userDetails == null || ((CustomUserDetails) userDetails).getId() != userId) {
+            return ResponseEntity.badRequest().body("Invalid token");
+        }
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+        customUserDetails.getUser().setPassword(newPassword); // Giả sử bạn có phương thức setPassword
+        customUserDetailsService.updateUser(customUserDetails.getUser());
+
+        return ResponseEntity.ok("Password reset successfully");
     }
 }

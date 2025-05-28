@@ -39,4 +39,14 @@ public class BrokenController {
             @RequestParam BrokenStatus status) {
         return ResponseEntity.ok(brokenService.updateBrokenStatus(id, status));
     }
+    @GetMapping("/search")
+    public ResponseEntity<Page<BrokenResponse>> searchBrokenByEquipmentName(
+            @RequestParam(required = false) String equipmentName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<BrokenResponse> brokenPage = brokenService.searchBrokenByEquipmentName(equipmentName, pageable);
+        return ResponseEntity.ok(brokenPage);
+    }
 }

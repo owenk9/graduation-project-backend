@@ -154,4 +154,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return totalCost != null ? totalCost : 0.0;
     }
 
+    @Override
+    public Page<MaintenanceResponse> searchMaintenanceByEquipmentName(String equipmentName, Pageable pageable) {
+       Page<Maintenance> maintenances = maintenanceRepository.findByEquipmentNameContainingIgnoreCase(equipmentName, pageable);
+       return maintenances.map(maintenanceMapper::toMaintenanceResponse);
+    }
+
 }

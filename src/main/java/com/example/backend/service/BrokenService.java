@@ -16,4 +16,5 @@ public interface BrokenService {
     BrokenResponse updateBrokenStatus(int id, BrokenStatus status);
     Page<BrokenResponse> getBrokenReports(Integer year, String month, String quarter, Pageable pageable);
     List<BrokenByTime> getBrokenByTime(LocalDateTime startDate, LocalDateTime endDate, String groupBy);
+    Page<BrokenResponse> searchBrokenByEquipmentName(String equipmentName, Pageable pageable);
 }

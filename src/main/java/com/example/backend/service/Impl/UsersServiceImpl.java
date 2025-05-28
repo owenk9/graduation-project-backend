@@ -132,4 +132,10 @@ public class UsersServiceImpl implements UsersService {
         Page<Users> getAll = usersRepository.findAll(pageable);
         return getAll.map(userManagementMapper::toUserManagementResponse);
     }
+
+    @Override
+    public Page<UserManagementResponse> searchUsersByName(String name, Pageable pageable) {
+        Page<Users> usersPage = usersRepository.findByNameContainingIgnoreCase(name.trim(), pageable);
+        return usersPage.map(userManagementMapper::toUserManagementResponse);
+    }
 }

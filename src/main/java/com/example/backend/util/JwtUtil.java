@@ -1,4 +1,3 @@
-// src/main/java/com/example/backend/util/JwtUtil.java
 package com.example.backend.util;
 
 import io.jsonwebtoken.Claims;
@@ -23,6 +22,7 @@ public class JwtUtil {
     private static final String SECRET_KEY = "bXlzZWNyZXRrZXlmb3Jqd3RtYXN0ZXJwbGFuZXQ=2werwtwe";
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60 * 1000; // 15 phút
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000; // 7 ngày
+    private static final long RESET_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000; // 1 giờ
 
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
@@ -45,6 +45,21 @@ public class JwtUtil {
         return tokens;
     }
 
+    public String generateResetToken(String email, int userId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", userId);
+        claims.put("email", email);
+        claims.put("type", "reset"); // Đánh dấu token là reset token
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(email)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + RESET_TOKEN_EXPIRATION_TIME))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     private String createToken(Map<String, Object> claims, String subject, long expirationTime) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -57,12 +72,25 @@ public class JwtUtil {
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !"reset".equals(extractClaim(token, claims -> claims.get("type"))));
     }
 
     public Boolean validateRefreshToken(String token) {
         try {
-            extractAllClaims(token); // Kiểm tra tính hợp lệ của token
+            Claims claims = extractAllClaims(token);
+            // Refresh token không có trường "type" hoặc không phải "reset"
+            return !isTokenExpired(token) && !("reset".equals(claims.get("type")));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Boolean validateResetToken(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            if (!"reset".equals(claims.get("type"))) {
+                return false;
+            }
             return !isTokenExpired(token);
         } catch (Exception e) {
             return false;
@@ -76,6 +104,10 @@ public class JwtUtil {
     @SuppressWarnings("unchecked")
     public List<String> extractAuthorities(String token) {
         return extractClaim(token, claims -> (List<String>) claims.get("authorities"));
+    }
+
+    public Integer extractUserId(String token) {
+        return extractClaim(token, claims -> Integer.valueOf(claims.get("userId").toString()));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

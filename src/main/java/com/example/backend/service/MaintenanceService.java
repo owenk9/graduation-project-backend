@@ -22,4 +22,5 @@ public interface MaintenanceService {
     List<MaintenanceByTime> getMaintenanceByTime(LocalDateTime startDate, LocalDateTime endDate, String groupBy);
     Page<MaintenanceResponse> getMaintenanceReports(Integer year, String month, String quarter, Pageable pageable);
     Double getTotalMaintenanceCost();
+    Page<MaintenanceResponse> searchMaintenanceByEquipmentName(String equipmentName, Pageable pageable);
 }

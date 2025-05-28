@@ -33,5 +33,8 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     List<Object[]> countMaintenanceByQuarter(LocalDateTime startDate, LocalDateTime endDate);
     @Query("SELECT COALESCE(SUM(m.cost), 0) FROM Maintenance m")
     Double sumMaintenanceCost();
+
+    @Query("select m from Maintenance m where lower(m.equipmentItem.equipment.name) like lower(concat('%', :equipmentName, '%'))")
+    Page<Maintenance> findByEquipmentNameContainingIgnoreCase(String equipmentName, Pageable pageable);
 }
 
