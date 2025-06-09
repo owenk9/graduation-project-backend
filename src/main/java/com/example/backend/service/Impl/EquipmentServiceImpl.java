@@ -65,18 +65,21 @@ public class EquipmentServiceImpl implements EquipmentService {
     public EquipmentResponse updateEquipment(int id, EquipmentRequest equipmentRequest, String imageUrl) {
         Equipment existingEquipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Equipment not found with id: " + id));
+//        boolean equipmentExists = equipmentRepository.existsByName(equipmentRequest.getName());
+//        if(equipmentExists) {
+//            throw new DuplicateResourceException("Equipment with name " + equipmentRequest.getName() + " already exists");
+//        }
         existingEquipment.setName(equipmentRequest.getName());
         existingEquipment.setDescription(equipmentRequest.getDescription());
         existingEquipment.setCategory(getCategoryById(equipmentRequest.getCategoryId()));
         if (imageUrl != null) {
-            // Delete the old image if it exists
+
             String oldImageUrl = existingEquipment.getImageUrl();
             if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
                 try {
                     String fileName = oldImageUrl.substring(oldImageUrl.lastIndexOf("/") + 1);
                     fileStorageService.deleteFile(fileName);
                 } catch (IOException e) {
-                    // Log the exception but continue with the update
                     System.err.println("Failed to delete old image: " + e.getMessage());
                 }
             }

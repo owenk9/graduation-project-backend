@@ -77,13 +77,15 @@ public class StatisticsController {
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) String month,
             @RequestParam(required = false) String quarter) throws Exception {
-        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE); // Lấy toàn bộ dữ liệu
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
         Page<MaintenanceResponse> reports = maintenanceService.getMaintenanceReports(year, month, quarter, pageable);
 
-        String[] headers = {"ID", "Equipment Name", "Maintenance Date", "Description", "Technician", "Cost"};
+        String[] headers = {"ID", "Equipment Name", "Serial Number", "Maintenance Date", "Description", "Technician", "Cost"};
         List<Function<MaintenanceResponse, Object>> fieldExtractors = Arrays.asList(
                 MaintenanceResponse::getId,
                 MaintenanceResponse::getEquipmentName,
+                MaintenanceResponse::getSerialNumber,
                 MaintenanceResponse::getMaintenanceDate,
                 MaintenanceResponse::getDescription,
                 MaintenanceResponse::getTechnician,
@@ -106,7 +108,7 @@ public class StatisticsController {
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) String month,
             @RequestParam(required = false) String quarter) throws Exception {
-        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE); // Lấy toàn bộ dữ liệu
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
         Page<BrokenResponse> reports = brokenService.getBrokenReports(year, month, quarter, pageable);
 
         String[] headers = {"ID", "Equipment Name", "Serial Number", "Reported By", "Broken Date", "Description", "Status"};

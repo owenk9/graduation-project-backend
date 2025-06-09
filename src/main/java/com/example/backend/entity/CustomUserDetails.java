@@ -8,10 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 public class CustomUserDetails implements UserDetails {
@@ -26,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
         Set<GrantedAuthority> authorities = new HashSet<>();
 
         Hibernate.initialize(user.getUserRoles());
-        Set<UserRole> userRoles = user.getUserRoles();
+        List<UserRole> userRoles = user.getUserRoles();
         if (userRoles == null || !Hibernate.isInitialized(userRoles)) {
             throw new RuntimeException("User roles are not available or not initialized for user: " + user.getEmail());
         }
@@ -54,7 +51,7 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public RoleName getRole() {
-        Set<UserRole> userRoles = user.getUserRoles();
+        List<UserRole> userRoles = user.getUserRoles();
         if (userRoles != null && !userRoles.isEmpty()) {
             return userRoles.iterator().next().getRole().getRoleName();
         }

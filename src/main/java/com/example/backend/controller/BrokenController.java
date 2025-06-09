@@ -28,7 +28,7 @@ public class BrokenController {
 
     @GetMapping("/get/reports")
     public ResponseEntity<Page<BrokenResponse>> getAllBrokenReports(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "brokenDate");
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<BrokenResponse> broken = brokenService.getAllBrokenReports(pageable);
         return ResponseEntity.ok(broken);
@@ -44,7 +44,7 @@ public class BrokenController {
             @RequestParam(required = false) String equipmentName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "brokenDate");
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<BrokenResponse> brokenPage = brokenService.searchBrokenByEquipmentName(equipmentName, pageable);
         return ResponseEntity.ok(brokenPage);

@@ -11,5 +11,6 @@ public interface MaintenanceMapper {
     Maintenance toMaintenance(MaintenanceRequest maintenanceRequest);
     @Mapping(source = "equipmentItem.equipment.name", target = "equipmentName")
     @Mapping(source = "equipmentItem.id", target = "equipmentItemId")
+    @Mapping(source = "equipmentItem.serialNumber", target = "serialNumber")
     MaintenanceResponse toMaintenanceResponse(Maintenance maintenance);
 }

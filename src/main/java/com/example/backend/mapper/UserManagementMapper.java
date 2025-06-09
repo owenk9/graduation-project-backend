@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = "spring")
@@ -21,18 +22,15 @@ public interface UserManagementMapper {
     @Mapping(source = "department", target = "department")
     @Mapping(source = "userRoles", target = "role", qualifiedByName = "mapUserRolesToRole")
 
-
     UserManagementResponse toUserManagementResponse(Users users);
     @Named("mapUserRolesToRole")
-    default String mapUserRolesToRole(Set<UserRole> userRoles) {
+    default String mapUserRolesToRole(List<UserRole> userRoles) {
         if (userRoles == null || userRoles.isEmpty()) {
             return null;
         }
-        return userRoles.stream()
-                .findFirst()
-                .map(UserRole::getRole)
-                .map(Role::getRoleName)
-                .map(Enum::name)
-                .orElse(null);
+        return userRoles.get(0)  // vì đã @OrderBy DESC nên cái mới nhất nằm đầu
+                .getRole()
+                .getRoleName()
+                .name();
     }
 }

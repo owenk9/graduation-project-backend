@@ -25,10 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -74,7 +71,7 @@ public class UsersServiceImpl implements UsersService {
             UserRole userRole = new UserRole();
             userRole.setRole(role);
             userRole.setUsers(users);
-            Set<UserRole> userRoles = new HashSet<>();
+            List<UserRole> userRoles = new ArrayList<>();
             userRoles.add(userRole);
             users.setUserRoles(userRoles);
         }
@@ -106,6 +103,9 @@ public class UsersServiceImpl implements UsersService {
 
         String roleName = userManagementRequest.getRole();
         if (roleName != null && !roleName.isEmpty()) {
+            // Xóa role cũ
+            users.getUserRoles().clear();
+
             Role role = roleRepository.findByRoleName(RoleName.valueOf(roleName.toUpperCase()))
                     .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: " + roleName));
 
@@ -113,10 +113,9 @@ public class UsersServiceImpl implements UsersService {
             userRole.setRole(role);
             userRole.setUsers(users);
 
-            Set<UserRole> userRoles = new HashSet<>();
-            userRoles.add(userRole);
-            users.setUserRoles(userRoles);
+            users.getUserRoles().add(userRole);
         }
+
         Users updatedUser = usersRepository.save(users);
 
         return userManagementMapper.toUserManagementResponse(updatedUser);

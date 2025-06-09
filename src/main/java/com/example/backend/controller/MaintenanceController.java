@@ -72,7 +72,7 @@ public class MaintenanceController {
     @GetMapping("/get")
     public ResponseEntity<Page<MaintenanceResponse>> getMaintenance(@RequestParam(defaultValue = "0") int page,
                                                                     @RequestParam(defaultValue = "10") int size){
-       Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "maintenanceDate");
        Pageable pageable = PageRequest.of(page, size, sort);
        Page<MaintenanceResponse> maintenanceResponses = maintenanceService.getAllMaintenances(pageable);
        return ResponseEntity.ok(maintenanceResponses);
@@ -82,7 +82,7 @@ public class MaintenanceController {
                                                              @RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "10") int size)
     {
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "maintenanceDate");
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<MaintenanceResponse> history = maintenanceService.findByEquipmentItemId(equipmentItemId, pageable);
         return ResponseEntity.ok(history);
@@ -91,7 +91,7 @@ public class MaintenanceController {
     public ResponseEntity<Page<MaintenanceResponse>> searchMaintenanceByEquipmentName(@RequestParam(required = false) String name,
                                                                                       @RequestParam(defaultValue = "0") int page,
                                                                                       @RequestParam(defaultValue = "10") int size){
-        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Sort sort = Sort.by(Sort.Direction.DESC, "maintenanceDate");
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<MaintenanceResponse> maintenanceResponses = maintenanceService.searchMaintenanceByEquipmentName(name, pageable);
         return ResponseEntity.ok(maintenanceResponses);
