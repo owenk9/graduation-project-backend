@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtil {
     private static final String SECRET_KEY = "bXlzZWNyZXRrZXlmb3Jqd3RtYXN0ZXJwbGFuZXQ=2werwtwe";
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60 * 1000; // 15 phút
-    private static final long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000; // 7 ngày
-    private static final long RESET_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000; // 1 giờ
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 15 * 60 * 1000;
+    private static final long REFRESH_TOKEN_EXPIRATION_TIME = 7 * 24 * 60 * 60 * 1000;
+    private static final long RESET_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000;
 
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
@@ -49,7 +49,7 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("email", email);
-        claims.put("type", "reset"); // Đánh dấu token là reset token
+        claims.put("type", "reset");
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -78,7 +78,6 @@ public class JwtUtil {
     public Boolean validateRefreshToken(String token) {
         try {
             Claims claims = extractAllClaims(token);
-            // Refresh token không có trường "type" hoặc không phải "reset"
             return !isTokenExpired(token) && !("reset".equals(claims.get("type")));
         } catch (Exception e) {
             return false;

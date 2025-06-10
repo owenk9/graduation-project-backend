@@ -17,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -37,8 +39,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse updateCategory(int id, CategoryRequest categoryRequest) {
         Category existingCategory = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cannot found category with id " + id));
-        boolean categoryExists = categoryRepository.existsByCategoryName(categoryRequest.getCategoryName());
-        if(categoryExists){
+
+        Optional<Category> existingCategoryOptional = categoryRepository.findFirstByCategoryName(categoryRequest.getCategoryName());
+        if(existingCategoryOptional.isPresent() && existingCategoryOptional.get().getId() != id){
             throw new DuplicateResourceException("Category " + categoryRequest.getCategoryName() +  " already exists");
         }
         existingCategory.setCategoryName(categoryRequest.getCategoryName());

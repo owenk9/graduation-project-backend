@@ -12,6 +12,6 @@ public class EquipmentItemResponse {
     String equipmentName;
     String serialNumber;
     String status;
-    LocalDate purchaseDate;
+    LocalDateTime purchaseDate;
     String locationName;
 }

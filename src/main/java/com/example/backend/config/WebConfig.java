@@ -10,8 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Cấu hình phục vụ tài nguyên tĩnh từ thư mục uploads
         registry.addResourceHandler("/files/**")
-                .addResourceLocations("file:uploads/"); // Thư mục uploads chứa ảnh
+                .addResourceLocations("file:uploads/");
     }
 }

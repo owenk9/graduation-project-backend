@@ -23,6 +23,6 @@ public class Users {
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Broken> broken;
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @OrderBy("id DESC")  // sắp xếp giảm dần để cái mới nhất nằm đầu
+    @OrderBy("id DESC")
     private List<UserRole> userRoles;
 }

@@ -15,6 +15,6 @@ public class EquipmentItemRequest {
     @NotBlank(message = "Serial number not null")
     String serialNumber;
     String status;
-    LocalDate purchaseDate;
+    LocalDateTime purchaseDate;
     Integer locationId;
 }

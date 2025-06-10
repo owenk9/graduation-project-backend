@@ -34,7 +34,6 @@ public class FileController {
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists()) {
-                // Determine content type
                 String contentType = "application/octet-stream";
                 if (fileName.toLowerCase().endsWith(".png")) {
                     contentType = "image/png";

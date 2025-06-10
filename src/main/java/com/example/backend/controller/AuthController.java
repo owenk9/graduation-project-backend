@@ -26,7 +26,7 @@ import java.util.Map;
 public class AuthController {
     AuthenticationManager authenticationManager;
     JwtUtil jwtUtil;
-    BlacklistService blacklistService; // Để blacklist token khi logout
+    BlacklistService blacklistService;
     CustomUserDetailsService customUserDetailsService;
 
     @PostMapping("/login")
@@ -108,9 +108,8 @@ public class AuthController {
         if (userDetails == null || ((CustomUserDetails) userDetails).getId() != userId) {
             return ResponseEntity.badRequest().body("Invalid token");
         }
-
         CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
-        customUserDetails.getUser().setPassword(newPassword); // Giả sử bạn có phương thức setPassword
+        customUserDetails.getUser().setPassword(newPassword);
         customUserDetailsService.updateUser(customUserDetails.getUser());
 
         return ResponseEntity.ok("Password reset successfully");

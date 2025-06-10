@@ -30,10 +30,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Cho phép truy cập không cần xác thực
+
                         .requestMatchers("/auth/**", "/home/**", "/user/me", "/user/change_password", "/user/forgot_password", "/files/**").permitAll()
 
-                        // Quyền quản lý (chỉ ADMIN và SUPER_ADMIN)
                         .requestMatchers("/category/add", "/category/update/**", "/category/delete/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                         .requestMatchers("/equipment/add", "/equipment/update/**", "/equipment/delete/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                         .requestMatchers("/item/add", "/item/update/**", "/item/delete/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
@@ -41,20 +40,17 @@ public class SecurityConfig {
                         .requestMatchers("/maintenance/add", "/maintenance/update/**", "/maintenance/delete/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                         .requestMatchers("/borrowing/approve/**", "/borrowing/reject/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN")
 
-                        // Quyền quản lý người dùng (chỉ SUPER_ADMIN)
                         .requestMatchers("/user/add", "/user/update/**", "/user/delete/**").hasAuthority("ROLE_SUPER_ADMIN")
 
-                        // Quyền xem thông tin (USER, ADMIN, SUPER_ADMIN)
                         .requestMatchers("/equipment/get", "/equipment/get/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                         .requestMatchers("/category/get", "/category/get/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                         .requestMatchers("/item/get", "/item/get/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
-//                        .requestMatchers("/files/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                         .requestMatchers("/location/get", "/location/get/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                         .requestMatchers("/maintenance/get", "/maintenance/get/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                         .requestMatchers("/borrowing/request", "/borrowing/get", "/borrowing/get/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
                         .requestMatchers("/notification/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN")
 
-                        // Các yêu cầu khác cần xác thực
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

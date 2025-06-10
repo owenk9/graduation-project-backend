@@ -65,10 +65,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     public EquipmentResponse updateEquipment(int id, EquipmentRequest equipmentRequest, String imageUrl) {
         Equipment existingEquipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Equipment not found with id: " + id));
-//        boolean equipmentExists = equipmentRepository.existsByName(equipmentRequest.getName());
-//        if(equipmentExists) {
-//            throw new DuplicateResourceException("Equipment with name " + equipmentRequest.getName() + " already exists");
-//        }
+
         existingEquipment.setName(equipmentRequest.getName());
         existingEquipment.setDescription(equipmentRequest.getDescription());
         existingEquipment.setCategory(getCategoryById(equipmentRequest.getCategoryId()));

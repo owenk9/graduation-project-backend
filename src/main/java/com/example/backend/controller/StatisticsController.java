@@ -140,7 +140,7 @@ public class StatisticsController {
 
     @GetMapping("/maintenance_by_time")
     public ResponseEntity<List<MaintenanceByTime>> getMaintenanceByTime(
-            @RequestParam(required = false) String startDate, // Format: "yyyy-MM-dd HH:mm:ss"
+            @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
             @RequestParam(defaultValue = "month") String groupBy) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

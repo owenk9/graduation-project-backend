@@ -24,7 +24,7 @@ public class EquipmentItem {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EquipmentItemStatus status;
-    LocalDate purchaseDate;
+    LocalDateTime purchaseDate;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     private Location location;

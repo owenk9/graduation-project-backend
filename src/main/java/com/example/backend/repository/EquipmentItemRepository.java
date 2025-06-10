@@ -3,12 +3,14 @@ package com.example.backend.repository;
 import com.example.backend.dto.response.StatusDistribution;
 import com.example.backend.entity.Equipment;
 import com.example.backend.entity.EquipmentItem;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EquipmentItemRepository extends JpaRepository<EquipmentItem, Integer> {
     Page<EquipmentItem> findByLocationId(int locationId, Pageable pageable);
@@ -25,4 +27,6 @@ public interface EquipmentItemRepository extends JpaRepository<EquipmentItem, In
             "FROM EquipmentItem ei GROUP BY ei.status")
     List<Object[]> countByStatusRaw();
 
+
+    Optional<EquipmentItem> findBySerialNumber(@NotBlank(message = "Serial number not null") String serialNumber);
 }

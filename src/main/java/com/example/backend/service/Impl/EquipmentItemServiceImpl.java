@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,9 +61,10 @@ public class EquipmentItemServiceImpl implements EquipmentItemService {
     public EquipmentItemResponse updateEquipmentItem(int id, EquipmentItemRequest equipmentItemRequest) {
         EquipmentItem equipmentItem = equipmentItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("EquipmentItem not found with id: " + id));
-        String serialNumber = equipmentItemRequest.getSerialNumber();
-        if(!serialNumber.equals(equipmentItem.getSerialNumber())){
-            throw new DuplicateResourceException("Serial number already exists: " + equipmentItem.getSerialNumber());
+        Optional<EquipmentItem> existingItem = equipmentItemRepository.findBySerialNumber(equipmentItemRequest.getSerialNumber());
+
+        if (existingItem.isPresent() && existingItem.get().getId() != id) {
+            throw new DuplicateResourceException("Serial number already exists: " + equipmentItemRequest.getSerialNumber());
         }
         equipmentItem.setSerialNumber(equipmentItemRequest.getSerialNumber());
         equipmentItem.setStatus(EquipmentItemStatus.valueOf(equipmentItemRequest.getStatus()));
