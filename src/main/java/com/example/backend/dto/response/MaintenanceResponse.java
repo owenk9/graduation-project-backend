@@ -14,6 +14,7 @@ public class MaintenanceResponse {
     LocalDateTime maintenanceDate;
     String description;
     String status;
+    String locationName;
     double cost;
     String technician;
 }

@@ -14,5 +14,6 @@ public interface BrokenMapper {
     @Mapping(source = "equipmentItem.serialNumber", target = "serialNumber")
     @Mapping(target = "fullName", expression = "java(broken.getUsers().getFirstName() + \" \" + broken.getUsers().getLastName())")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "equipmentItem.location.locationName", target = "locationName")
     BrokenResponse toBrokenResponse(Broken broken);
 }

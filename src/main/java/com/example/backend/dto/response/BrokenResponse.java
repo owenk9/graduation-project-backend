@@ -14,4 +14,5 @@ public class BrokenResponse {
     String fullName;
     LocalDateTime brokenDate;
     String description;
+    String locationName;
 }

@@ -15,7 +15,6 @@ public class Broken {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipment_item_id", nullable = false)
     private EquipmentItem equipmentItem;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", nullable = false)
     private Users users;
